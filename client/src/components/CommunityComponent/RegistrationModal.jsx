@@ -1,145 +1,231 @@
-import React, { useState } from "react";
-import "./RegistrationModal.css";
-import PaymentModal from "./PaymentModal";
+import React, { useState } from 'react';
+import axios from 'axios';
+import './RegistrationModal.css';
+import Logo from '../../assets/Logo-fit.png';
+import { registerParticipants } from '../../api';
 
-const RegistrationModal = ({ closeModal }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    email: "",
-    contact: "",
-    numberOfGuests: 0,
-    guests: [],
-  });
-
+const RegistrationModal = ({ closeModal, eventId, eventFee }) => {
+  console.log('Event ID:', eventId);
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [email, setEmail] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [guests, setGuests] = useState([{ name: '', age: '' }]);
+  const [isComingWithGuests, setIsComingWithGuests] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const [participantData, setParticipantData] = useState(null);
 
   const handleGuestChange = (index, field, value) => {
-    const updatedGuests = [...formData.guests];
-    updatedGuests[index][field] = value;
-    setFormData({ ...formData, guests: updatedGuests });
+    const newGuests = [...guests];
+    newGuests[index][field] = value;
+    setGuests(newGuests);
   };
 
-  const handleAddGuestFields = () => {
-    setFormData({
-      ...formData,
-      guests: [...formData.guests, { name: "", age: "" }],
-    });
+  const handleAddGuest = () => {
+    setGuests([...guests, { name: '', age: '' }]);
   };
 
-  const handleRemoveGuestField = (index) => {
-    const updatedGuests = formData.guests.filter((_, i) => i !== index);
-    setFormData({ ...formData, guests: updatedGuests });
+  const handleRemoveGuest = (index) => {
+    const newGuests = guests.filter((_, i) => i !== index);
+    setGuests(newGuests);
   };
 
-  const handleSubmit = () => {
-    // Perform form validation and submit logic
-    console.log("Registration Form Data:", formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    // Navigate to payment modal if there's a fee
-    setShowPaymentModal(true);
+    const participantData = {
+      eventId,
+      name,
+      age,
+      email,
+      contactNumber,
+      guests: guests.length > 0 && guests[0].name && guests[0].age ? guests : null,
+      paymentProof: null, // Set default value
+      isConfirmed: false, // Set default value
+      createdAt: new Date(), // Set default value
+    };
+
+    if (eventFee > 0) {
+      setParticipantData(participantData);
+      setShowPaymentModal(true);
+    } else {
+      try {
+        const response = await registerParticipants(participantData);
+        console.log('Registration successful:', response);
+        closeModal();
+      } catch (error) {
+        console.error('Error registering participants:', error);
+      }
+    }
   };
 
-  if (showPaymentModal) {
-    return <PaymentModal closeModal={closeModal} email={formData.email} />;
-  }
+  const totalPayment = (guests.length + 1) * eventFee;
+  console.log('Total Payment:', totalPayment);
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <h2>Event Registration</h2>
-        <form>
+    <div className="modal" onClick={closeModal}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-button" onClick={closeModal}>X</button>
+        <img src={Logo} alt="" className="logo" />
+        <h1>Event Registration Form</h1>
+        <h2>Thank you for showing interest in joining this event!</h2>
+        <form onSubmit={handleSubmit}>
           <label>
             Name:
             <input
               type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
             />
           </label>
           <label>
             Age:
             <input
               type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              required
             />
           </label>
           <label>
             Email:
             <input
               type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </label>
           <label>
             Contact Number:
             <input
-              type="tel"
-              name="contact"
-              value={formData.contact}
-              onChange={handleChange}
+              type="text"
+              value={contactNumber}
+              onChange={(e) => setContactNumber(e.target.value)}
+              required
             />
           </label>
-          <label>
-            Number of Guests:
-            <input
-              type="number"
-              name="numberOfGuests"
-              value={formData.numberOfGuests}
-              onChange={(e) => {
-                const newCount = parseInt(e.target.value, 10) || 0;
-                const guests = [...formData.guests];
-                while (guests.length < newCount) guests.push({ name: "", age: "" });
-                while (guests.length > newCount) guests.pop();
-                setFormData({ ...formData, numberOfGuests: newCount, guests });
-              }}
-            />
-          </label>
-          {formData.guests.map((guest, index) => (
-            <div key={index} className="guest-fields">
-              <label>
-                Guest {index + 1} Name:
-                <input
-                  type="text"
-                  value={guest.name}
-                  onChange={(e) =>
-                    handleGuestChange(index, "name", e.target.value)
-                  }
-                />
-              </label>
-              <label>
-                Guest {index + 1} Age:
-                <input
-                  type="number"
-                  value={guest.age}
-                  onChange={(e) =>
-                    handleGuestChange(index, "age", e.target.value)
-                  }
-                />
-              </label>
-              <button type="button" onClick={() => handleRemoveGuestField(index)}>
-                Remove
-              </button>
+          {!isComingWithGuests && (
+            <div className="guest-prompt">
+              <p>Coming with guests?</p>
+              <button type="button" onClick={() => setIsComingWithGuests(true)}>Yes</button>
             </div>
-          ))}
-          <p>Any updates will be sent to the provided email.</p>
-          <button type="button" onClick={handleSubmit}>
-            Submit
-          </button>
-          <button type="button" onClick={closeModal}>
-            Cancel
-          </button>
+          )}
+          {isComingWithGuests && (
+            <div className="guests-section">
+              {guests.map((guest, index) => (
+                <div key={index} className="guest-fields">
+                  <label>
+                    Guest Name:
+                    <input
+                      type="text"
+                      value={guest.name}
+                      onChange={(e) => handleGuestChange(index, 'name', e.target.value)}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Guest Age:
+                    <input
+                      type="number"
+                      value={guest.age}
+                      onChange={(e) => handleGuestChange(index, 'age', e.target.value)}
+                      required
+                    />
+                  </label>
+                  <button className="full-button" type="button" onClick={() => handleRemoveGuest(index)}>Remove Guest</button>
+                </div>
+              ))}
+              <button className="full-button" type="button" onClick={handleAddGuest}>Add Guest</button>
+            </div>
+          )}
+          <button className="full-button" type="submit">Register</button>
         </form>
+        {showPaymentModal && (
+          <PaymentModal
+            closeModal={() => setShowPaymentModal(false)}
+            participantData={participantData}
+            totalPayment={totalPayment}
+            onClose={closeModal}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const PaymentModal = ({ closeModal, participantData, totalPayment, onClose }) => {
+  const [paymentProof, setPaymentProof] = useState(null);
+
+  const handleFileChange = (e) => {
+    console.log('handleFileChange called');
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      console.log('File converted to Base64:', reader.result);
+      setPaymentProof(reader.result); // Base64-encoded string
+    };
+
+    reader.onerror = (error) => {
+        console.error("Error reading image file:", error);
+    };
+
+    reader.readAsDataURL(file); // Converts to Base64
+};
+
+
+  const handleConfirmPayment = async () => {
+    const formData = {
+      eventId: participantData.eventId,
+      name: participantData.name,
+      age: participantData.age,
+      email: participantData.email,
+      contactNumber: participantData.contactNumber,
+      guests: JSON.stringify(participantData.guests),
+      paymentProof: paymentProof, 
+      isConfirmed: false, // Set default value
+      createdAt: new Date(), // Set default value
+    }
+
+    try {
+      console.log('Submitting payment proof:', formData);
+      const response = await registerParticipants(formData);
+      console.log('Registration successful:', response);
+      alert("Registered successfully! A confirmation email will be sent to you.");
+      closeModal();
+      onClose();
+    } catch (error) {
+      console.error('Error registering participants:', error);
+    }
+  };
+
+  return (
+    <div className="modal">
+      <div className="modal-content">
+        <h2>Complete Payment</h2>
+        <p>
+          Please scan the QR code below to submit the event fee. Once your
+          transaction is complete, your registration will be confirmed, and a
+          confirmation email will be sent to {participantData.email}.
+        </p>
+        <p>
+          Your Total Payment: <strong>${totalPayment}</strong>
+        </p>
+        <div className="qr-code">
+          <img src="qr-code-placeholder.png" alt="QR Code for Payment" />
+        </div>
+        <label>
+          Payment Proof:
+          <input
+            type="file"
+            onChange={handleFileChange}
+            required
+          />
+        </label>
+        <button onClick={handleConfirmPayment}>Confirm Payment</button>
+        <button onClick={closeModal}>Cancel</button>
       </div>
     </div>
   );

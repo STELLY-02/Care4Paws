@@ -1,5 +1,66 @@
+@font-face {
+  font-family: AbhayaLibre-regular;
+  src: url(../../fonts/abhaya-libre/AbhayaLibre-Regular.ttf);
+}
+
+.reg-form label{
+  font-family: AbhayaLibre-regular;
+  font-size: 20px;
+  font-weight: 300;
+  text-align: start;
+  
+}
+
+.Add-title{
+  font-size: 2rem;
+  color: #5A4231;
+  margin-top: -20px;
+  margin-bottom: 10px;
+}
+
+.logo{
+  margin: 0px;
+  padding: 0px;
+}
+
+.checkbox-container{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 10px;
+  margin: 10px 0;
+  padding-top: 10px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.reg-description{
+  margin: 0;
+  height: 100px;
+  width: 100%;
+}
+
+.reg-event-type{
+  height: 30px;
+  margin: 0 10px;
+  border-radius: 8px;
+  border-color: #e5e2e2;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;}
+
+.checkbox-input{
+  height: 20px;
+  width: 20px;
+}
+
+.checkbox-label{
+  display: flex;
+  justify-content: start;
+  flex-direction: row-reverse;
+  gap: 5px;
+  margin: 0;
+}
+
 body {
-    font-family: "Arial", sans-serif;
+    font-family: AbhayaLibre-regular;
     margin: 0;
     padding: 0;
     box-sizing: border-box;

@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./EventDetailPage.css";
 import RegistrationModal from "./RegistrationModal";
 
 function EventDetailsModal({ isOpen, onClose, eventDetails }) {
   if (!isOpen) return null; // Do not render if modal is not open
+  console.log("Event Details:", eventDetails);
 
   const [isRegistrationOpen, setRegistrationOpen] = useState(false);
+  const [specEventDetails, setSpecEventDetails] = useState(null);
+
+  useEffect(() => {
+    setSpecEventDetails(eventDetails);
+  }, [eventDetails]);
 
   const openRegistrationModal = () => {
     setRegistrationOpen(true);
@@ -16,8 +22,8 @@ function EventDetailsModal({ isOpen, onClose, eventDetails }) {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-container">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-container " onClick={(e) => e.stopPropagation()}>
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
@@ -61,9 +67,13 @@ function EventDetailsModal({ isOpen, onClose, eventDetails }) {
         <button className="register-button" onClick={openRegistrationModal}>
           Register Now
         </button>
-        {isRegistrationOpen && (
-        <RegistrationModal closeModal={closeRegistrationModal} />
-      )}
+        {isRegistrationOpen && specEventDetails && (
+            <RegistrationModal
+              closeModal={closeRegistrationModal}
+              eventId={specEventDetails.id}
+              eventFee={specEventDetails.eventFee}
+            />
+          )}
       </div>
     </div>
   );

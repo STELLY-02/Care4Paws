@@ -7,8 +7,10 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.2s ease;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin: 20px auto;
     width: fit-content;
+    height: fit-content;
+    cursor: pointer;
   }
   
   .event-card:hover {
@@ -95,6 +97,7 @@
     justify-content: space-between;
     align-items: center;
     background-color: #9a826f;
+    gap: 10px;
   }
   
   .event-status {
@@ -103,10 +106,10 @@
   }
   
   .event-tags {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
     gap: 5px;
-  }
+}
   
   .event-tag {
     background-color: #D6C0B3;
@@ -116,6 +119,7 @@
     font-size: 12px;
     font-weight: 600;
     margin: 0 5px;
+    text-align: center;
   }
   
   .event-share {

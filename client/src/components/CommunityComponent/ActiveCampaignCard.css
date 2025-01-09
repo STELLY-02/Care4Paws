@@ -10,15 +10,40 @@
   overflow: visible;
 }
 
-.ActiveCampaign h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #333;
+.active-campaign-card{
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  padding: 10px;
+  padding-bottom: 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #fcfaf6;
+  width: 400px;
 }
 
-.ActiveCampaign p {
-  font-size: 14px;
-  color: #555;
+.active-campaign-card h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+}
+
+.active-campaign-card p {
+  font-size: 16px;
+  color: #322e2e;
+  margin-bottom: 10px;
+}
+
+.button-alignment{
+  display: flex;
+  justify-content: center;
+}
+
+.logo-active{
+  width: 130px;
+  height: 130px;
+  margin: 0 auto;
 }
 
 .campaign-stats p {

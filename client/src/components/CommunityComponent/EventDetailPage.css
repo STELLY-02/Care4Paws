@@ -1,4 +1,12 @@
-/* Modal overlay to dim the background */
+@font-face {
+  font-family: AbhayaLibre-regular;
+  src: url(../../fonts/abhaya-libre/AbhayaLibre-Regular.ttf);
+}
+
+p{
+  font-size: 18px;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -15,13 +23,14 @@
   /* Modal container for the pop-up */
   .modal-container {
     background: #E4E0E1;
-    width: 500px;
+    width: 700px;
     max-width: 90%; /* Ensure responsiveness */
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.3s ease-in-out;
     position: relative;
+    padding: 20px 50px;
   }
   
   /* Close button */
@@ -51,15 +60,18 @@
   }
   
   .event-title {
-    font-size: 18px;
+    font-size: 28px;
     font-weight: bold;
     margin-top: 10px;
     color: #333;
+    font-family: AbhayaLibre-regular;
   }
   
   /* Modal content */
   .modal-content {
     padding: 15px;
+    align-items: center;
+    justify-content: center;
   }
   
   .organizer-info {
@@ -78,7 +90,7 @@
   }
   
   .organizer-name {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
     color: #555;
     height: 40px;
@@ -87,7 +99,7 @@
   
   .event-description {
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 18px;
     color: #666;
   }
   

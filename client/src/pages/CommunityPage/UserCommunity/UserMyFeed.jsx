@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PostCard } from "../../../components/CommunityComponent/PostCard";
 import "./UserMyFeed.css";
 import { fetchUserAndFollowedPosts, createPost, fetchUserPosts } from "../../../api";
@@ -62,6 +62,7 @@ function MyFeed() {
   
       reader.readAsDataURL(file); // Converts to Base64
   };
+  const fileInputRef = useRef(null);
   
     // Handle post submission
     const handlePostSubmit = async (e) => {

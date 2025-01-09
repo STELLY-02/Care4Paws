@@ -9,7 +9,7 @@ const eventSchema = new mongoose.Schema({
   eventDate: { type: Date, required: true },
   eventTime: { type: String, required: true },
   eventLocation: { type: String, required: true },
-  eventFee: { type: String, required: true },
+  eventFee: { type: Number, default: 0, required: true },
   eventDescription: { type: String, required: true },
   eventOrganizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   participantsCount: { type: Number, default: 0 },

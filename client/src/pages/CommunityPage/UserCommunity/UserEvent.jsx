@@ -20,11 +20,11 @@ function Event() {
         let events = [];
         // if (role === 'coordinator') {
         //   console.log("Fetching coordinator events");
-          events = await fetchCoordinatorEvents();
+        //   events = await fetchCoordinatorEvents();
         // } else {
         //   console.log("Fetching user events");
-        //   events = await fetchEvents();
-        // }
+          events = await fetchEvents();
+        //}
         console.log("List of events:", events);
         setEventData(events);
       } catch (error) {
@@ -80,17 +80,20 @@ function Event() {
           <EventCard
             key={index}
             {...event}
-            onShare={handleShare}
+            //onShare={handleShare}
             onClick={() => handleOpenModal(event)}
           />
         ))}
       </div>
       {/* Modal for event details */}
-      <EventDetailsModal
+      {isModalOpen && (
+        <EventDetailsModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         eventDetails={selectedEventDetails}
       />
+      )}
+      
       {/* Modal for event registration */}
       {showRegistrationModal && (
         <div className="modal">

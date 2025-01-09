@@ -1,8 +1,8 @@
 /*define endpoints and controllers for community module*/
-
-const express = require('express')
-const router = express.Router()
-const mongoose = require('mongoose')
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const multer = require('multer');
 const verifyToken = require("../middlewares/authMiddleware");
 require("../models/communityPostModel");
 const communityPost =  mongoose.model("communityPost");
@@ -12,7 +12,21 @@ require("../models/userModel");
 const User = mongoose.model("User");
 require("../models/eventModel");
 const Event = mongoose.model("Event");
+require("../models/campaignModel");
+const Campaign = mongoose.model("Campaign");
+require("../models/participantModel");
+const Participant = mongoose.model("Participant");
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 router.post('/create-post', verifyToken, async (req, res) => {
     console.log("Request body:", req.body);
@@ -34,8 +48,8 @@ router.post('/create-post', verifyToken, async (req, res) => {
             photo,
             timestamp: new Date().toLocaleTimeString(),
             date: new Date().toLocaleDateString(),
-            likes: 0,
-            comments: 0,
+            likes: [],
+            comments: [],
             postedBy: req.user._id,
         });
         post.save().then(result=>{
@@ -155,15 +169,16 @@ router.get('/fetch-userfeed/:userId', verifyToken, async (req, res) => {
   }
 });
 
-router.get('/fetch-userpost/:userId', verifyToken, async (req, res) => {
+
+router.get('/fetch-trendingpost/:userId', verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(req.params.userId).populate('following', '_id');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    console.log("User1:", user);
-    const posts = await communityPost.find({ postedBy: user._id })
+    const userIds = [user._id, ...user.following.map(followedUser => followedUser._id)];
+    const posts = await communityPost.find({ postedBy: { $nin: userIds } })
       .populate('likes', '_id') // Populate likes field
       .populate('postedBy', 'username avatarSrc') // Populate author field with username and avatarSrc
       .sort({ createdAt: -1 });
@@ -171,22 +186,81 @@ router.get('/fetch-userpost/:userId', verifyToken, async (req, res) => {
     // Transform the posts
     const transformedPosts = posts.map(post => ({
       _id: post._id,
-      caption: post.caption,
-      photo: post.photo,
-      timestamp: post.timestamp,
-      date: post.date,
-      likes: Array.isArray(post.likes) ? post.likes.length : 0,
-      userLikes: Array.isArray(post.likes) ? post.likes.map(user => user._id) : [],
-      comments: Array.isArray(post.comments) ? post.comments.length : 0,
-      postedBy: post.postedBy ? post.postedBy._id : null,
-      username: post.postedBy ? post.postedBy.username : null,
-      avatarSrc: post.postedBy ? post.postedBy.avatarSrc : null,
+      imageSrc: post.imageSrc,
+      description: post.description,
+      username: post.postedBy.username,
+      avatarSrc: post.postedBy.avatarSrc,
+      likes: post.likes.length,
+      createdAt: post.createdAt,
+      // Add other fields as needed
     }));
 
-    res.json({ posts: transformedPosts });
+    res.json(transformedPosts);
   } catch (error) {
-    console.error("Error fetching posts:", error);
+    console.error("Error fetching trending posts:", error);
     res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+});
+
+router.get('/fetch-posts-by-title', async (req, res) => {
+  try {
+    const { title } = req.query;
+    console.log("Query title:", title);
+    const posts = await communityPost.find({ caption: new RegExp(`^${title}$`, 'i') })
+      .populate('postedBy', 'username avatarSrc')
+      .populate('likes', '_id');
+      const transformedPosts = posts.map(post => ({
+        _id: post._id,
+        avatarSrc: post.postedBy.avatarSrc,
+        username: post.postedBy.username,
+        displayName: post.postedBy.displayName,
+        photo: post.photo,
+        caption: post.caption,
+        createdAt: post.createdAt,
+        likes: post.likes,
+        userLikes: post.likes.map(user => user._id),
+        comments: post.comments,
+      }));
+      console.log("Fetched posts:", transformedPosts); // Debugging line
+      res.json(transformedPosts);
+    } catch (err) {
+      console.error('Error fetching posts by title:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+// router.get('/fetch-activecampaigns', async (req, res) => {
+//   try {
+//     const currentDate = new Date();
+//     const campaigns = await Campaign.find({
+//       startDate: { $lte: currentDate },
+//       endDate: { $gte: currentDate },
+//     });
+//     res.json(campaigns);
+//   } catch (err) {
+//     console.error('Error fetching active campaigns:', err);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+
+router.get('/fetch-activecampaigns', verifyToken, async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const campaigns = await Campaign.find({
+      startDate: { $lte: currentDate },
+      endDate: { $gte: currentDate },
+    });
+
+    const transformedCampaigns = campaigns.map(campaign => ({
+      _id: campaign._id,
+      title: campaign.title,
+      description: campaign.description,
+    }));
+
+    res.json(transformedCampaigns);
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).json({ error: 'Database error' });
   }
 });
 
@@ -459,6 +533,64 @@ router.get('/fetch-coordinator-events', verifyToken, async (req, res) => {
   } catch (err) {
       console.error("Error fetching coordinator events:", err);
       res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post('/participants/register', async (req, res) => {
+  try {
+    const { eventId, name, age, email, contactNumber, guests, paymentProof } = req.body;
+    //const paymentProof = req.file ? req.file.path : null;
+    const participant = new Participant({
+      eventId,
+      name,
+      age,
+      email,
+      contactNumber,
+      guests: guests ? JSON.parse(guests) : [],
+      paymentProof,
+      isConfirmed: false,
+      createdAt: new Date(),
+    });
+    const savedParticipant = await participant.save();
+    res.status(201).json(savedParticipant);
+  } catch (err) {
+    console.error('Error registering participants:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+router.post('/upload-payment-proof', upload.single('paymentProof'), async (req, res) => {
+  try {
+    const { participantId } = req.body;
+    const paymentProof = req.file.path;
+    const participant = await Participant.findByIdAndUpdate(participantId, { paymentProof }, { new: true });
+    res.status(200).json(participant);
+  } catch (err) {
+    console.error('Error uploading payment proof:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/accept/:participantId', verifyToken, async (req, res) => {
+  try {
+    const { participantId } = req.params;
+    const participant = await Participant.findByIdAndUpdate(participantId, { isConfirmed: true }, { new: true });
+    res.status(200).json(participant);
+  } catch (err) {
+    console.error('Error accepting participant:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/participants/:eventId', verifyToken, async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const participants = await Participant.find({ eventId });
+    res.status(200).json(participants);
+  } catch (err) {
+    console.error('Error fetching participants:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

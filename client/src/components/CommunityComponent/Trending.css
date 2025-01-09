@@ -1,19 +1,27 @@
+@font-face {
+  font-family: AbhayaLibre-regular;
+  src: url(../../fonts/abhaya-libre/AbhayaLibre-Regular.ttf);
+}
+
 .TrendingSection {
   display: flex;
+  flex-direction: column;
   gap: 20px;
   width: 100%;
 }
 
 .TrendingPosts {
-  flex: 0 0 70%; /* 80% width, no flexibility to grow/shrink */
   background-color: #f9f9f9;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .ActiveCampaigns {
-  flex: 0 0 30%; /* 20% width, no flexibility to grow/shrink */
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -21,6 +29,7 @@
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
 }
 
 .TrendingPostItem img {
@@ -28,14 +37,44 @@
   border-radius: 10px;
 }
 
-@media (max-width: 1100px) {
-  .TrendingSection{
-    display: contents;
-  }
-  .ActiveCampaigns{
-    display: none;
-  }
-  .TrendingPosts{
-    margin: 20px auto;
-  }
+.ActiveCampaigns h3{
+  text-align: center;
+  font-family: AbhayaLibre-regular;
+  font-size: 30px;
+  margin: 0;
 }
+
+.ActiveCampaigns p{
+  font-family: AbhayaLibre-regular;
+  font-size: 20px;
+  margin: 0;
+  font-style: italic;
+}
+
+.TrendingPosts h3{
+  text-align: center;
+  font-family: AbhayaLibre-regular;
+  font-size: 30px;
+  margin: 0;
+}
+
+.trending-posts{
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.section-header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.TrendingPosts p{
+  font-family: AbhayaLibre-regular;
+  font-size: 20px;
+  margin: 0;
+  font-style: italic;
+}
+

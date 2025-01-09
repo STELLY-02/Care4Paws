@@ -10,7 +10,7 @@ import Cutepic from "../../../assets/Login Page.png";
 import MoveInIcon from "../../../assets/arrow-back-icon.svg";
 import MoveOutIcon from "../../../assets/arrow-forward-icon.svg";
 import MiniNavBar from '../../../components/CommunityComponent/MiniNavBar'
-import Event from "../UserCommunity/UserEvent";
+import CoordinatorEvent from './CoordinatorEvent';
 import "./CoordinatorCommunityPage.css";
 import CoordinatorFeed from "../../../components/CommunityComponent/CoordinatorFeed";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
@@ -32,7 +32,7 @@ const renderTabContent = () => {
     case "myPage":
       return <CoordinatorFeed />
     case "myEvent":
-      return <Event />;
+      return <CoordinatorEvent />;
     default:
       return <div>Tab not found</div>;
   }

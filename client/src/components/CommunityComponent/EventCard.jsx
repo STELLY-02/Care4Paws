@@ -60,9 +60,9 @@ function EventCard({
             <span key={index} className="event-tag">{tag}</span>
           ))}
         </div>
-        <div className="event-share" onClick={onShare}>
+        {/* <div className="event-share" onClick={onShare}>
           <FaShareAlt /> Share
-        </div>
+        </div> */}
       </div>
     </div>
   );

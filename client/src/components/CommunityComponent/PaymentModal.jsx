@@ -1,10 +1,9 @@
 import React from "react";
 import "./PaymentModal.css";
 
-const PaymentModal = ({ closeModal, email }) => {
+const PaymentModal = ({ closeModal, email, totalPayment }) => {
   const handleConfirmPayment = () => {
-    console.log(`Payment confirmation sent to ${email}`);
-    alert("Payment confirmed! A confirmation email will be sent to you.");
+    alert("Registered successfully! A confirmation email will be sent to you.");
     closeModal();
   };
 
@@ -16,6 +15,9 @@ const PaymentModal = ({ closeModal, email }) => {
           Please scan the QR code below to submit the event fee. Once your
           transaction is complete, your registration will be confirmed, and a
           confirmation email will be sent to {email}.
+        </p>
+        <p>
+          Your Total Payment: <strong>${totalPayment}</strong>
         </p>
         <div className="qr-code">
           <img src="qr-code-placeholder.png" alt="QR Code for Payment" />

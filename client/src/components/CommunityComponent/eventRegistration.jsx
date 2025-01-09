@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { createEvent } from '../../api'; // Import the createEvent function
 import './EventRegistration.css';
+import Logo from '../../assets/Logo-fit.png';
 
 const EventRegistration = ({ onClose }) => {
   const [eventName, setEventName] = useState('');
@@ -62,8 +63,9 @@ const EventRegistration = ({ onClose }) => {
 
   return (
     <div>
-      <h2>Add Event</h2>
-      <form onSubmit={handleSubmit}>
+      <img src={Logo} alt="" className="logo" />
+      <h2 className='Add-title'>Add Event</h2>
+      <form onSubmit={handleSubmit} className='reg-form'> 
         <label>
           Event Name:
           <input
@@ -85,9 +87,10 @@ const EventRegistration = ({ onClose }) => {
         </label>
         <label>
           Event Tags:
-          <div>
-            <label>
+          <div className='checkbox-container'>
+            <label className='checkbox-label'>
               <input
+              className='checkbox-input'
                 type="checkbox"
                 name="eventTags"
                 value="Fundraiser"
@@ -95,8 +98,9 @@ const EventRegistration = ({ onClose }) => {
               />
               Fundraiser
             </label>
-            <label>
+            <label className='checkbox-label'>
               <input
+              className='checkbox-input'
                 type="checkbox"
                 name="eventTags"
                 value="Adoption"
@@ -104,8 +108,9 @@ const EventRegistration = ({ onClose }) => {
               />
               Adoption
             </label>
-            <label>
+            <label className='checkbox-label'>
               <input
+                className='checkbox-input'
                 type="checkbox"
                 name="eventTags"
                 value="Competition"
@@ -113,8 +118,9 @@ const EventRegistration = ({ onClose }) => {
               />
               Competition
             </label>
-            <label>
+            <label className='checkbox-label'>
               <input
+              className='checkbox-input'
                 type="checkbox"
                 name="eventTags"
                 value="Talk"
@@ -127,6 +133,7 @@ const EventRegistration = ({ onClose }) => {
         <label>
           Event Type:
           <select
+          className='reg-event-type'
             name="eventType"
             value={eventType}
             onChange={(e) => setEventType(e.target.value)}
@@ -179,6 +186,7 @@ const EventRegistration = ({ onClose }) => {
         <label>
           Event Description:
           <textarea
+            className='reg-description'
             name="eventDescription"
             value={eventDescription}
             onChange={(e) => setEventDescription(e.target.value)}

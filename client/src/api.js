@@ -62,7 +62,7 @@ export const fetchUserAndFollowedPosts = async (userId) => {
     const response = await fetch(`${BASE_URL}/communityPost/fetch-userfeed/${userId}`, {
       method: "GET",
       headers: {
-        Authorization: 'Bearer ' + token, // Include token in headers
+        Authorization: 'Bearer ' + token,
         'Content-Type': 'application/json'
       },
     });
@@ -70,6 +70,68 @@ export const fetchUserAndFollowedPosts = async (userId) => {
     return data.posts;
   } catch (error) {
     console.error("Error fetching posts:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const fetchTrendingPosts = async (userId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${BASE_URL}/communityPost/fetch-trendingpost/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.posts;
+  } catch (error) {
+    console.error('Error fetching trending posts:', error);
+    throw error;
+  }
+};
+
+export const fetchPostsByTitle = async (caption) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${BASE_URL}/communityPost/fetch-posts-by-title?title=${encodeURIComponent(caption)}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching posts by title:', error);
+    throw error;
+  }
+};
+
+export const fetchActiveCampaigns = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${BASE_URL}/communityPost/fetch-activecampaigns`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("api, active campaigns: ", response);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching active campaigns:', error);
     throw error;
   }
 };
@@ -332,7 +394,7 @@ export const fetchCoordinatorEvents = async () => {
               "Content-Type": "application/json"
           },
       });
-      console.log(response);
+      console.log("response from api: ", response);
       if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -340,5 +402,35 @@ export const fetchCoordinatorEvents = async () => {
   } catch (error) {
       console.error("Error fetching coordinator events:", error);
       throw error;
+  }
+};
+
+export const fetchParticipantsList = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/communityPost/participants`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching participants:', error);
+    throw error;
+  }
+};
+
+export const acceptParticipant = async (participantId) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/communityPost/participants/accept/${participantId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error accepting participant:', error);
+    throw error;
+  }
+};
+
+export const registerParticipants = async (participantData) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/communityPost/participants/register`, participantData);
+    return response.data;
+  } catch (error) {
+    console.error('Error registering participants:', error);
+    throw error;
   }
 };

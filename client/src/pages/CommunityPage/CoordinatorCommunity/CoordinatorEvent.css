@@ -1,0 +1,18 @@
+.coordinator-event{
+    width: 100%;
+    display: block;
+}
+  .event-button{
+    width: fit-content;
+  }
+
+  .event-card-container{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow: scroll;
+  }
+
+  .event-card{
+    width: 350px;
+  }

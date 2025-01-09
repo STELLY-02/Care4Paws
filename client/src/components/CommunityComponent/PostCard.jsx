@@ -90,16 +90,19 @@ const handleLikeClick = async () => {
 
   return (
     <div className="post-card">
-      <div className="postHeader">
-        <img 
-          src={avatarSrc} 
-          alt={`${displayName}'s avatar`} 
-          className="postAvatar"
-        />
-        <div className="userInfo">
-          {/* <div className="displayName">{displayName}</div> */}
-          <div className="username">{username}</div>
+      <div className="postBox">
+        <div className="postHeader">
+          <img 
+            src={avatarSrc} 
+            alt={`${displayName}'s avatar`} 
+            className="postAvatar"
+          />
+          <div className="userInfo">
+            {/* <div className="displayName">{displayName}</div> */}
+            <div className="username">{username}</div>
+          </div>
         </div>
+        <button onClick={handleDelete}>Delete</button>
       </div>
       <div className='image-box'>
       {imageSrc && (
@@ -126,15 +129,14 @@ const handleLikeClick = async () => {
               onClick={handleLikeClick} // Add click handler
             />
             <span>{likeCount}</span>
-      <div className="interaction-buttons">
+      <div className="interactions">
         <FaRegCommentDots
           className="interactionButton"
           aria-label={`${commentCount} comments`}
           size={30}
           onClick={openModal}
         />
-        <span>{commentCount}</span>
-        <button onClick={handleDelete}>Delete</button>
+        <span>{commentCount}</span>      
       </div>
       {isModalOpen && (
         <CommentModal

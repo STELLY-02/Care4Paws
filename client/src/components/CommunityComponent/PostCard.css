@@ -3,16 +3,25 @@
   src: url(../../fonts/abhaya-libre/);
 }
 
-.postCard {
+.post-card {
   width: 100%;
   max-width: 1000px;
   margin: 20px auto;
-  background: #fff;
+  background: #fafafa;
   border: 1px solid #dbdbdb;
   border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   overflow: hidden;
   font-family: Arial, sans-serif;
+}
+
+.postBox{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  align-items: center;
+  background-color: #E4E0E1;
+  border-radius: 8px 8px 0 0;
 }
 
 .postHeader {
@@ -53,6 +62,8 @@
 
 .postContent {
   padding: 20px;
+  background-color: #E4E0E1;
+  border-radius: 0 0 8px 8px ;
 }
 
 .description {

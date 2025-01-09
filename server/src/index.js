@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
+const bodyParser = require('body-parser');
 const cors = require("cors");
 
 //database connection
@@ -16,9 +17,11 @@ const app = express();
 
 //Middleware
 app.use(express.json()); //enable parsing of json
+app.use(express.json({ limit: '50mb' })); // Increase payload size limit
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(
     cors({
-        origin: "http://localhost:5173", // Allow requests from frontend
+        origin: "http://localhost:3000", // Allow requests from frontend
         methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
         allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true, // Allow cookies if needed
