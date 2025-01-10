@@ -71,3 +71,18 @@
 .comment-content p {
   margin: 0;
 }
+
+.comment-textarea{
+  margin: 0;
+  height: 100px;
+  width: 100%;
+}
+
+.header-profile{
+  display: flex;
+  flex-direction: row;
+}
+
+.user-comment{
+  margin: 10px;
+}

@@ -51,9 +51,11 @@ function CommentModal({ post, updateCommentCount, onClose }) {
       .map(comment => (
         <div key={comment._id} className={`comment ${parentId ? 'reply' : ''}`}>
           <div className="comment-content">
-            <img src={comment.author?.avatarSrc || "/default-avatar.png"} alt={comment.author?.username || "Anonymous"} />
-            <div>
+            <div className="header-profile">
+              <img src={comment.author?.avatarSrc || "/default-avatar.png"} alt={comment.author?.username || "Anonymous"} />  
               <p>{comment.author?.username || "Anonymous"}</p>
+            </div>
+            <div className="user-comment">
               <p>{comment.content}</p>
             </div>
           </div>
@@ -71,14 +73,18 @@ function CommentModal({ post, updateCommentCount, onClose }) {
           X
         </button>
         <div className="modal-post">
-          <h2>{username}</h2>
-          <img src={avatarSrc} alt={username}></img>
-          <p>{caption}</p>
-          {photo && <img src={photo} alt={caption} />}
+          <div className="header-profile">
+            <h2>{username}</h2>
+            <img src={avatarSrc} alt={username}></img>
+          </div>
+          <div>
+            <p>{caption}</p>
+            {photo && <img src={photo} alt={caption} />}
+          </div>
         </div>
         <div className="comments-section">
           <form onSubmit={handleCommentSubmit}>
-            <textarea
+            <textarea className="comment-textarea"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Write a comment..."

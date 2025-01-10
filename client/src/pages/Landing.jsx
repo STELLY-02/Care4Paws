@@ -5,8 +5,16 @@ import WhatWeOffer from "../components/LandingComponent/WhatWeOffer/WhatWeOffer"
 import Testimonials from "../components/LandingComponent/Testimonials/Testimonials";
 import JoinUs from "../components/LandingComponent/JoinUs/JoinUs";
 import ContactUs from "../components/LandingComponent/ContactUs/ContactUs";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/login"); // Navigate to the login page
+  };
+
+  
   return (
     <div className="landing-page">
       <header className="landing-header">
@@ -25,7 +33,7 @@ const Landing = () => {
               <a href="#contact">Contact Us</a>
             </li>
           </ul>
-          <button className="login-button">Login</button>
+          <button className="login-button" onClick={handleLoginClick}>Login</button>
         </nav>
       </header>
       <main>
