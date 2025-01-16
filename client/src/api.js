@@ -1,17 +1,25 @@
 import axios from 'axios'; //send HTTP requests
 // import comment from '../../server/src/models/commentModel';
 
-const BASE_URL = 'http://localhost:8080/api';
+const BASE_URL = 'http://localhost:5003/api';
 
 /* Handling authentication */
 export const loginUser = async (credentials) => {
     try {
-        //axios.post needs URL and data (an object)
-        const { data } = await axios.post(`${BASE_URL}/auth/login`, credentials);
-        return data; // { token, role }
+        const response = await axios.post(`${BASE_URL}/auth/login`, credentials, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        });
+        return response.data;
     } catch (error) {
+        if (error.code === 'ERR_NETWORK') {
+            console.error('Network Error: Server might be down or unreachable');
+            throw new Error('Unable to connect to server. Please check if the server is running.');
+        }
         console.error("Login failed:", error.response?.data || error.message);
-        throw error; // Ensure errors are propagated to the caller
+        throw error;
     }
 };
 

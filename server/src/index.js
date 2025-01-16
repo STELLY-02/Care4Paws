@@ -1,5 +1,12 @@
 const express = require("express");
-const dotenv = require("dotenv").config();
+const dotenv = require("dotenv");
+
+// Load environment variables before any other code
+dotenv.config();
+
+// Verify environment variables are loaded
+console.log('MongoDB URI:', process.env.CONNECTION_STRING);
+
 const cors = require("cors");
 
 //database connection
@@ -16,20 +23,14 @@ const app = express();
 
 //Middleware
 app.use(express.json()); //enable parsing of json
-app.use(
-    cors({
-        origin: "http://localhost:5173", // Allow requests from frontend
-        methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true, // Allow cookies if needed
-    })
-); //enable CORS, handle request from diff origin (eg handle request from frontend)
 
-// app.use(
-//     cors({
-//       origin: "*", // Allow all origins
-//     })
-//   );
+// Update CORS configuration
+app.use(cors({
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Allow both localhost variations
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 
 // Explicitly handle preflight requests
 app.options("*", (req, res) => {
@@ -49,7 +50,9 @@ app.get('/',(req,res)=>{
 })
 
 //Start the server
-const PORT = process.env.PORT || 8081;
-app.listen(PORT, ()=> {
-    console.log(`Server is running at port ${PORT}`);
-})
+const PORT = process.env.PORT || 5003;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+}).on('error', (err) => {
+    console.error('Server failed to start:', err);
+});
