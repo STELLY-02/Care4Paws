@@ -1,0 +1,16 @@
+.userProfileLink {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .postAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .userInfo .username {
+    font-weight: bold;
+  }

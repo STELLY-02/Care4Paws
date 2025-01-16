@@ -1,7 +1,7 @@
 import axios from 'axios'; //send HTTP requests
 // import comment from '../../server/src/models/commentModel';
 
-const BASE_URL = 'http://localhost:8080/api';
+const BASE_URL = 'http://localhost:8085/api';
 
 /* Handling authentication */
 export const loginUser = async (credentials) => {

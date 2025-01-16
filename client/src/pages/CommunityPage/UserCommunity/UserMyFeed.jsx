@@ -4,6 +4,7 @@ import "./UserMyFeed.css";
 import { fetchUserAndFollowedPosts, createPost, fetchUserPosts } from "../../../api";
 import { BiSolidDog } from "react-icons/bi";
 import CommentModal from "../../../components/CommunityComponent/CommentModal";
+import axios from 'axios';
 
 function MyFeed() {
     // State to track new post content
@@ -11,6 +12,7 @@ function MyFeed() {
       text: "",
       image: null,
     });
+    const fileInputRef = useRef(null);
   
     // State to retrieve list of posts
     const [posts, setPosts] = useState([]);
@@ -22,17 +24,13 @@ function MyFeed() {
         console.log("current role: ", role);
         console.log("Fetching posts for user ID:", userId);
         let posts = [];
-        // if (role ==="user"){
-          posts = await fetchUserAndFollowedPosts(userId);
-        // }else if (role === "coordinator"){
-        //   posts = await fetchUserPosts(userId);
-        // }
+        posts = await fetchUserAndFollowedPosts(userId);
         
         console.log("Fetched posts:", posts);
-        setPosts(posts || []); // Fallback to an empty array
+        setPosts(posts || []);
       } catch (error) {
         console.error("Failed to load posts:", error);
-        setPosts([]); // Handle error state
+        setPosts([]);
       }
     };
 
@@ -48,29 +46,39 @@ function MyFeed() {
     };            //spread operator, copy all properties from newPost
   
     // Handle image upload
-    const handleImageUpload = (e) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
+    const handleImageUpload = async (file) => {
+      console.log("handleImageUpload called");
+      console.log("Selected file:", file);
+      const formData = new FormData();
+      formData.append('image', file);
   
-      reader.onload = () => {
-          setNewPost({ ...newPost, image: reader.result }); // Base64-encoded string
-      };
-  
-      reader.onerror = (error) => {
-          console.error("Error reading image file:", error);
-      };
-  
-      reader.readAsDataURL(file); // Converts to Base64
-  };
-  const fileInputRef = useRef(null);
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:8085/api/uploadPic/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log("Image uploaded:", response.data);
+        return response.data.data; // Cloudinary URL
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    };
   
     // Handle post submission
     const handlePostSubmit = async (e) => {
       e.preventDefault();
       try {
+        let imageUrl = newPost.image;
+        if (fileInputRef.current && fileInputRef.current.files[0]) {
+          imageUrl = await handleImageUpload(fileInputRef.current.files[0]);
+        }
+
         const newPostData = {
           caption: newPost.text,
-          photo: newPost.image,
+          photo: imageUrl,
         };
 
         console.log("Submitting post data:", newPostData);
@@ -137,7 +145,7 @@ function MyFeed() {
             onChange={handlePostChange}
           />
           <div className="form-actions">
-            <input id="choose-file" type="file" accept="image/*" onChange={handleImageUpload} />
+            <input id="choose-file" type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} />
             <button type="submit">Post</button>
           </div>
         </form>

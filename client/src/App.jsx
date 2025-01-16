@@ -11,6 +11,7 @@ import Chatbot from "./components/Chatbot";
 import EditProfilePage from "./components/EditProfilePage";
 import UserCommunityPage from './pages/CommunityPage/UserCommunity/UserCommunityPage';
 import CoordinatorCommunityPage from './pages/CommunityPage/CoordinatorCommunity/CoordinatorCommunityPage';
+import UserProfile from './pages/CommunityPage/UserProfile';
 import Landing from './pages/Landing';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/user-profile/:userId" component={UserProfile} />
                 {/* Protected Routes */}
                 <Route
                     path="/admin/*"

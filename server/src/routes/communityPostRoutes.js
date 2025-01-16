@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const multer = require('multer');
 const verifyToken = require("../middlewares/authMiddleware");
 require("../models/communityPostModel");
 const communityPost =  mongoose.model("communityPost");
@@ -16,17 +15,8 @@ require("../models/campaignModel");
 const Campaign = mongoose.model("Campaign");
 require("../models/participantModel");
 const Participant = mongoose.model("Participant");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({ storage });
+const upload = require('../middlewares/multer');
+const cloudinary = require('../utils/cloudinary');
 
 router.post('/create-post', verifyToken, async (req, res) => {
     console.log("Request body:", req.body);
@@ -38,9 +28,9 @@ router.post('/create-post', verifyToken, async (req, res) => {
         return res.status(422).json({ error: "Please add all the fields" });
     }
 
-    if (!photo.startsWith("data:image/")) {
-        return res.status(400).json({ error: "Invalid photo format" });
-    }
+    // if (!photo.startsWith("data:image/")) {
+    //     return res.status(400).json({ error: "Invalid photo format" });
+    // }
 
     try {
         const post = new communityPost({
@@ -64,8 +54,9 @@ router.post('/create-post', verifyToken, async (req, res) => {
 router.get('/fetch-all-post', verifyToken, async(req, res) => {
     communityPost
         .find({ postedBy: req.user._id })
-        .populate("postedBy", "username")
-        .populate("likes", "_id") // Populate the likes field to get the full array
+        .sort({ date: -1, timestamp: -1 })
+        .populate("postedBy", "username") // Populate the postedBy field with the username
+        .populate("likes", "_id") // Populate the likes field to get the full array of ids
         .then(posts => {
             // Transform the posts to match frontend structure
             const transformedPosts = posts.map(post => ({
@@ -91,7 +82,7 @@ router.get('/fetch-all-post', verifyToken, async(req, res) => {
 router.get('/fetch-post/:id', verifyToken, async (req, res) => {
     const { id } = req.params; // Extract the post ID from the URL params
     try {
-        const post = await communityPost.findById(id).populate('postedBy', 'avatarSrc username'); // Use findById to get the post by ID
+        const post = await communityPost.findById(id).sort({ date: -1, timestamp: -1 }).populate('postedBy', 'avatarSrc username'); // Use findById to get the post by ID
 
         if (!post) {
             return res.status(404).json({ error: 'Post not found' });
@@ -136,7 +127,7 @@ router.get('/fetch-post/:id', verifyToken, async (req, res) => {
 
 router.get('/fetch-userfeed/:userId', verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId).populate('following', '_id');
+    const user = await User.findById(req.params.userId).sort({ date: -1, timestamp: -1 }).populate('following', '_id');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -145,7 +136,7 @@ router.get('/fetch-userfeed/:userId', verifyToken, async (req, res) => {
     const posts = await communityPost.find({ postedBy: { $in: userIds } })
       .populate('likes', '_id') // Populate likes field
       .populate('postedBy', 'username avatarSrc') // Populate author field with username and avatarSrc
-      .sort({ createdAt: -1 });
+      .sort({ date: -1, timestamp: -1 });
 
     // Transform the posts
     const transformedPosts = posts.map(post => ({
@@ -172,7 +163,7 @@ router.get('/fetch-userfeed/:userId', verifyToken, async (req, res) => {
 
 router.get('/fetch-trendingpost/:userId', verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId).populate('following', '_id');
+    const user = await User.findById(req.params.userId).sort({ date: -1, timestamp: -1 }).populate('following', '_id');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -207,6 +198,7 @@ router.get('/fetch-posts-by-title', async (req, res) => {
     const { title } = req.query;
     console.log("Query title:", title);
     const posts = await communityPost.find({ caption: new RegExp(`^${title}$`, 'i') })
+    .sort({ date: -1, timestamp: -1 })
       .populate('postedBy', 'username avatarSrc')
       .populate('likes', '_id');
       const transformedPosts = posts.map(post => ({
@@ -249,7 +241,7 @@ router.get('/fetch-activecampaigns', verifyToken, async (req, res) => {
     const campaigns = await Campaign.find({
       startDate: { $lte: currentDate },
       endDate: { $gte: currentDate },
-    });
+    }).sort({ date: -1, timestamp: -1 });
 
     const transformedCampaigns = campaigns.map(campaign => ({
       _id: campaign._id,
@@ -563,7 +555,8 @@ router.post('/participants/register', async (req, res) => {
 router.post('/upload-payment-proof', upload.single('paymentProof'), async (req, res) => {
   try {
     const { participantId } = req.body;
-    const paymentProof = req.file.path;
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const paymentProof = result.secure_url;
     const participant = await Participant.findByIdAndUpdate(participantId, { paymentProof }, { new: true });
     res.status(200).json(participant);
   } catch (err) {
