@@ -14,16 +14,45 @@ function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { token, role, userId } = await loginUser(formData);
-            localStorage.setItem('token', token); // Save token
-            localStorage.setItem('role', role);   // Save role 
-            localStorage.setItem('userId',userId);
-            //alert('Login successful! Redirecting...');
-            // Redirect based on role
-            if (role === 'admin') navigate('/admin');
-            else if (role === 'coordinator') navigate('/coordinator');
-            else navigate('/user');
+            const response = await loginUser(formData);
+            console.log('Login response:', response); // Debug log
+
+            const { token, role, userId } = response;
+            
+            // Debug logs
+            console.log('Storing in localStorage:', {
+                token,
+                role,
+                userId
+            });
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
+            localStorage.setItem('userId', userId);
+
+            // Debug log after storing
+            console.log('Stored values:', {
+                storedToken: localStorage.getItem('token'),
+                storedRole: localStorage.getItem('role'),
+                storedUserId: localStorage.getItem('userId')
+            });
+
+            switch(role) {
+                case 'admin':
+                    navigate('/admin');
+                    break;
+                case 'coordinator':
+                    navigate('/coordinator');
+                    break;
+                case 'user':
+                    navigate('/user');
+                    break;
+                default:
+                    setError('Invalid role');
+                    break;
+            }
         } catch (err) {
+            console.error('Login error:', err);
             setError(err.response?.data?.message || 'Login failed');
         }
     };
@@ -37,6 +66,7 @@ function LoginPage() {
                     name="email"
                     type="email"
                     placeholder="Email"
+                    value={formData.email}
                     onChange={handleChange}
                     required
                 />
@@ -44,6 +74,7 @@ function LoginPage() {
                     name="password"
                     type="password"
                     placeholder="Password"
+                    value={formData.password}
                     onChange={handleChange}
                     required
                 />

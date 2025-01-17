@@ -26,7 +26,7 @@ export const SidebarData = (role) => {
       {
         title: "Discover Cute Pet",
         icon: <img src={AdoptIcon} alt="Adopt Icon" className="icon" />,
-        link: "/user/home",
+        link: "/user/adoption",
       },
       {
         title: "Lost and Found Corner",
@@ -60,7 +60,7 @@ export const SidebarData = (role) => {
       {
         title: "Discover Cute Pet",
         icon: <img src={AdoptIcon} alt="Adopt Icon" className="icon" />,
-        link: "/coordinator/home",
+        link: "/coordinator/adoption",
       },
       {
         title: "Lost and Found Corner",

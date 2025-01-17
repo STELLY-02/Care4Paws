@@ -1,65 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
+const ProtectedRoute = ({ allowedRoles, children }) => {
     const token = localStorage.getItem('token');
-    const [decoded, setDecoded] = useState(null);
-    const [notification, setNotification] = useState('');
-    const [redirect, setRedirect] = useState(false);
+    const userRole = localStorage.getItem('role');
+    const userId = localStorage.getItem('userId');
 
     useEffect(() => {
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                setDecoded(decodedToken);
+        console.log('ProtectedRoute - Auth Data:', {
+            token,
+            userRole,
+            userId
+        });
+    }, [token, userRole, userId]);
 
-                if (!allowedRoles.includes(decodedToken.role)) {
-                    // User doesn't have the right role, show notification and redirect
-                    setNotification('You do not have access to the page.');
-                    setRedirect(true); // Trigger redirect after showing notification
-                }
-            } catch {
-                localStorage.removeItem('token');
-                setNotification('Invalid token. Please log in again.');
-                setRedirect(true); // Trigger redirect after showing notification
-            }
-        } else {
-            setNotification('Please log in to access this page.');
-            setRedirect(true); // Trigger redirect after showing notification
-        }
-    }, [token, allowedRoles]);
-
-    useEffect(() => {
-        if (notification) {
-            const timer = setTimeout(() => {
-                setNotification(''); // Clear notification after timeout
-                setRedirect(true); // Trigger redirection after the alert is shown
-            }, 2000); // 2-second delay
-            return () => clearTimeout(timer);
-        }
-    }, [notification]);
-
-    // Handle redirection if necessary
-    if (redirect) {
-        if (!token) {
-            return <Navigate to="/login" replace />;
-        }
-        if (decoded && !allowedRoles.includes(decoded.role)) {
-            return <Navigate to={`/${decoded.role}`} replace />;
-        }
+    if (!token || !userRole || !userId) {
+        console.log('Missing auth data:', { token, userRole, userId });
+        return <Navigate to="/login" replace />;
     }
 
-    return (
-        <>
-            {notification && (
-                <div style={{ backgroundColor: '#f8d7da', padding: '10px', color: '#721c24' }}>
-                    {notification}
-                </div>
-            )}
-            {children}
-        </>
-    );
+    if (allowedRoles && !allowedRoles.includes(userRole)) {
+        console.log('Invalid role for route:', {
+            userRole,
+            allowedRoles
+        });
+        
+        if (userRole === 'coordinator') {
+            return <Navigate to="/coordinator" replace />;
+        } else if (userRole === 'user') {
+            return <Navigate to="/user" replace />;
+        } else if (userRole === 'admin') {
+            return <Navigate to="/admin" replace />;
+        }
+        return <Navigate to="/login" replace />;
+    }
+
+    return children;
 };
 
 export default ProtectedRoute;

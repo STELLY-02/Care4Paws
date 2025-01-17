@@ -1,0 +1,95 @@
+* {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  .navbar {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: #fafafa;
+    width: 100%;
+    padding: 0px 10px;
+  }
+  
+  .navleft {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .logo {
+    width: 180px;
+  }
+  
+  .navright {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Add spacing between items in navright */
+    margin-left: auto; /* Push navright to the far right */
+    /* background-color: aqua; */
+  }
+  
+  .chatNoti {
+    margin-right: 50px;
+    padding: 10px;
+    padding-right: 40px;
+    border-radius: 50px;
+    color: #282828;
+    cursor: pointer;
+    display: flex; /* Ensures items inside chatNoti are aligned horizontally */
+    gap: 10px; /* Space between the notification and chat icons */
+  }
+  
+  .chatNoti img {
+    display: inline-flex;
+    flex-direction: row;
+  
+    width: 45px;
+  }
+  
+  .notiicon {
+    border-radius: 30px;
+    background-color: antiquewhite;
+    margin-right: 10px;
+    padding: 8px;
+  }
+  
+  .chaticon {
+    border-radius: 30px; /* Ensure it's a perfect circle */
+    background-color: antiquewhite;
+    padding: 8px;
+    width: 100px; /* Increase the width of the circle */
+  }
+  
+  .avatar {
+    display: inline-flex;
+    align-items: center;
+    width: 60px;
+    cursor: pointer;
+    padding: 5px;
+  }
+  
+  /* Media Query for small screens */
+  @media (max-width: 768px) {
+    .chatNoti {
+      margin-right: 20px;
+      padding: 8px;
+      padding-right: 20px;
+      flex-direction: row; /* Ensure horizontal alignment of the icons */
+      gap: 15px; /* Space between the notification and chat icons */
+    }
+  
+    .chaticon,
+    .notiicon {
+      width: 40px; /* Adjust icon size on smaller screens */
+      height: 40px;
+    }
+  
+    .navright {
+      gap: 5px; /* Adjust spacing between elements */
+    }
+  }

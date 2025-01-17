@@ -12,6 +12,7 @@ import EditProfilePage from "./components/EditProfilePage";
 import UserCommunityPage from './pages/CommunityPage/UserCommunity/UserCommunityPage';
 import CoordinatorCommunityPage from './pages/CommunityPage/CoordinatorCommunity/CoordinatorCommunityPage';
 import Landing from './pages/Landing';
+import CoordinatorAdoptionPage from './pages/AdoptionPage/CoorAdoption/CoordinatorAdoptionPage';
 
 function App() {
     return (
@@ -39,6 +40,7 @@ function App() {
                             <Routes>
                                 <Route path="" element={<CoordinatorDashboard />} />
                                 <Route path="/community" element={<CoordinatorCommunityPage />} />
+                                <Route path="/adoption" element={<CoordinatorAdoptionPage />} />
                             </Routes>
                         </ProtectedRoute>
                     }
