@@ -350,3 +350,62 @@ export const fetchCoordinatorEvents = async () => {
       throw error;
   }
 };
+
+export const addPet = async (petData) => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        // Debug log
+        console.log('Adding pet with:', {
+            token: token ? 'Present' : 'Missing',
+            formDataKeys: Object.keys(petData)
+        });
+
+        const formData = new FormData();
+        
+        // Log each field being added
+        Object.keys(petData).forEach(key => {
+            if (key === 'photo') {
+                if (petData[key]) {
+                    console.log('Adding photo:', petData[key].name);
+                    formData.append('photo', petData[key]);
+                } else {
+                    console.log('No photo provided');
+                }
+            } else {
+                console.log(`Adding ${key}:`, petData[key]);
+                formData.append(key, petData[key]);
+            }
+        });
+
+        // Log FormData contents
+        console.log('FormData entries:');
+        for (let pair of formData.entries()) {
+            console.log(pair[0], ':', pair[1] instanceof File ? pair[1].name : pair[1]);
+        }
+
+        const response = await axios.post(`${BASE_URL}/pets`, formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                // Don't set Content-Type, axios will set it with boundary for FormData
+            },
+            withCredentials: true
+        });
+
+        console.log('Server response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Add pet error details:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status,
+            headers: error.response?.headers
+        });
+
+        throw new Error(error.response?.data?.error || error.message || 'Failed to add pet');
+    }
+};

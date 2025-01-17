@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { SidebarData } from "../../../components/SidebarData";
 import Navbar from "../../../components/Navbar";
 import './CoordinatorAdoption.css';
+import { addPet } from '../../../api';  // Import the addPet function
 
 const CoordinatorAdoptionPage = () => {
     const token = localStorage.getItem('token');
@@ -46,62 +47,77 @@ const CoordinatorAdoptionPage = () => {
         }
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            console.log('Selected file:', file);  // Debug log
+            setFormData(prev => ({
+                ...prev,
+                photo: file
+            }));
+            // Create preview URL
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        if (!token) {
-            console.error('No token found');
-            alert('Please login again');
-            return;
-        }
-
         try {
+            if (!formData.photo) {
+                alert('Please select a photo');
+                return;
+            }
+
             const formDataToSend = new FormData();
             
-            // Append all form data
-            Object.keys(formData).forEach(key => {
-                if (key === 'photo') {
-                    if (formData[key]) {
-                        formDataToSend.append('photo', formData[key]);
-                    }
-                } else {
-                    formDataToSend.append(key, formData[key]);
-                }
-            });
+            // Log each field being added
+            console.log('Adding fields to FormData:');
+            
+            // Add each field to FormData
+            formDataToSend.append('name', formData.name);
+            console.log('Added name:', formData.name);
+            
+            formDataToSend.append('age', formData.age);
+            console.log('Added age:', formData.age);
+            
+            formDataToSend.append('breed', formData.breed);
+            console.log('Added breed:', formData.breed);
+            
+            formDataToSend.append('vaccinated', formData.vaccinated);
+            console.log('Added vaccinated:', formData.vaccinated);
+            
+            formDataToSend.append('description', formData.description);
+            console.log('Added description:', formData.description);
+            
+            // Add the photo last
+            formDataToSend.append('photo', formData.photo);
+            console.log('Added photo:', formData.photo.name);
 
-            // Debug logs
-            console.log('Sending form data:', Object.fromEntries(formDataToSend));
-            console.log('Token being sent:', token);
-
-            const response = await fetch('/api/pets', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formDataToSend,
-            });
-
-            console.log('Response status:', response.status);
-            const responseData = await response.json();
-            console.log('Response data:', responseData);
-
-            if (response.ok) {
-                setFormData({
-                    name: '',
-                    age: '',
-                    breed: '',
-                    vaccinated: false,
-                    description: '',
-                    photo: null
-                });
-                setPreviewUrl(null);
-                alert('Pet added successfully!');
-            } else {
-                throw new Error(responseData.error || 'Failed to add pet');
+            // Verify FormData contents
+            console.log('FormData contents:');
+            for (let pair of formDataToSend.entries()) {
+                console.log(pair[0], ':', pair[1] instanceof File ? pair[1].name : pair[1]);
             }
+
+            const response = await addPet(formDataToSend);
+            console.log('Pet added successfully:', response);
+
+            // Reset form
+            setFormData({
+                name: '',
+                age: '',
+                breed: '',
+                vaccinated: false,
+                description: '',
+                photo: null
+            });
+            setPreviewUrl(null);
+            alert('Pet added successfully!');
         } catch (error) {
             console.error('Error adding pet:', error);
-            alert('Failed to add pet. Please try again.');
+            alert(error.message || 'Failed to add pet');
         }
     };
 
@@ -218,7 +234,7 @@ const CoordinatorAdoptionPage = () => {
                                                 id="photo"
                                                 name="photo"
                                                 accept="image/*"
-                                                onChange={handleInputChange}
+                                                onChange={handleFileChange}
                                                 required
                                             />
                                             {previewUrl && (

@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const path = require('path');
 
 // Load environment variables before any other code
 dotenv.config();
@@ -15,6 +16,7 @@ const dbConnect = require("./config/dbConnect");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const communityPostRoutes = require("./routes/communityPostRoutes");
+const petRoutes = require("./routes/petRoutes");
 
 
 dbConnect();
@@ -40,10 +42,14 @@ app.options("*", (req, res) => {
 // Increase the body size limit for JSON payloads
 app.use(express.json({ limit: '10mb' }));
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 //Routes
 app.use("/api/auth", authRoutes); //handling authentication, request to /api/auth send to authRoutes
 app.use("/api/users", userRoutes); //handling users, users is the API endpoints
 app.use("/api/communityPost", communityPostRoutes); //handling community module
+app.use("/api/pets", petRoutes);
 
 app.get('/',(req,res)=>{
     res.send('Welcome to Care4Paws')
