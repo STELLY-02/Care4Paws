@@ -5,6 +5,8 @@ import Logo from "../../assets/logo.png"
 import ActiveCampaignCard from './ActiveCampaignCard';
 import { fetchTrendingPosts, fetchPosts, fetchActiveCampaigns } from '../../api';
 import TrendingPost from './TrendingPost';
+import CuteDog3 from "../../assets/cutedog3.png"
+import CuteDog2 from "../../assets/cutedog2.png"
 
 const TrendingSection = () => {
 
@@ -48,16 +50,22 @@ const TrendingSection = () => {
     return (
       <div className="TrendingSection">
           <div className="ActiveCampaigns">
-          <div className='section-header'>
+          <div className='coordinator-header'>
+            <img src={CuteDog3} alt="" className="cute-dog" />
             <h3>Active Campaigns</h3>
             <p>Join the campaigns and share your thoughts!</p>
           </div>
+          <div className='section-header'>
+          </div>
+          <div className='campaign-row'>
           {campaigns.map((campaign, index) => (
           <ActiveCampaignCard key={index} campaign={campaign} />
         ))}
+          </div>
         </div>
         <div className="TrendingPosts">
-          <div className='section-header'>
+          <div className='coordinator-intro'>
+          <img src={CuteDog2} alt="" className="cute-dog2" />
           <h3>Trending Posts</h3>
           <p>See what is on trend now and find your paw-friends!</p>
           </div>

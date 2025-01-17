@@ -21,7 +21,7 @@ function App() {
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/user-profile/:userId" component={UserProfile} />
+                <Route path="/user-profile/:interestedId" element={<UserProfile />} />
                 {/* Protected Routes */}
                 <Route
                     path="/admin/*"

@@ -4,6 +4,7 @@ import './ActiveCampaignCard.css';
 import { createPost, fetchPostsByTitle } from '../../api';
 import Logo from '../../assets/Logo-fit.png';
 import PostModal from './PostModal';
+import axios from 'axios';
 
 const ActiveCampaignCard = ({ campaign }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,20 +25,26 @@ const ActiveCampaignCard = ({ campaign }) => {
     setNewPost({ ...newPost, text: e.target.value });
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
+  const handleImageUpload = async (file) => {
+    console.log("handleImageUpload called");
+    console.log("Selected file:", file);
+    const formData = new FormData();
+    formData.append('image', file);
 
-    reader.onload = () => {
-        setNewPost({ ...newPost, image: reader.result }); // Base64-encoded string
-    };
-
-    reader.onerror = (error) => {
-        console.error("Error reading image file:", error);
-    };
-
-    reader.readAsDataURL(file); // Converts to Base64
-};
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post('http://localhost:8085/api/uploadPic/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("Image uploaded:", response.data);
+      return response.data.data; // Cloudinary URL
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
 const handleDeletePost = () => {
   console.log("Deleting post with ID:");
@@ -46,9 +53,10 @@ const handleDeletePost = () => {
   const handlePostSubmit = async (e) => {
         e.preventDefault();
         try {
+          let imageUrl = newPost.image;
           const newPostData = {
             caption: newPost.text,
-            photo: newPost.image,
+            photo: imageUrl,
           };
   
           console.log("Submitting post data:", newPostData);
@@ -106,102 +114,8 @@ const handleDeletePost = () => {
         posts={posts}
         handleDeletePost={handleDeletePost}
       />
-      {/* <div className="posts-container">
-      {posts.map((post, index) => (
-          <PostCard
-          key={index}
-          _id={post._id}
-          avatarSrc={post.postedBy.avatarSrc}
-          username={post.postedBy.username}
-          displayName={post.postedBy.displayName}
-          imageSrc={post.photo}
-          description={post.caption}
-          timestamp={post.createdAt}
-          date={post.createdAt}
-          likes={post.likes}
-          userLikes={post.userLikes}
-          onDelete={handleDeletePost}
-          comments={post.comments}
-          />
-        ))}
-      </div> */}
     </div>
   );
 };
 
 export default ActiveCampaignCard;
-
-
-
-
-// const ActiveCampaign = ({ title, description, postsCount, onViewPosts, onAddPost }) => {
-//   return (
-//     <div className="ActiveCampaign">
-//       <h3>{title}</h3>
-//       <p>{description}</p>
-//       <div className="campaign-stats">
-//         <p><strong>{postsCount}</strong> people have joined this campaign!</p>
-//       </div>
-//       <div className="campaign-buttons">
-//         <button onClick={onViewPosts}>View Posts</button>
-//         <button onClick={onAddPost}>Add Yours</button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// const ActiveCampaignCard = () => {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [selectedCampaign, setSelectedCampaign] = useState(null);
-
-//   const handleViewPosts = (campaign) => {
-//     setSelectedCampaign(campaign);
-//     setIsModalOpen(true);
-//   };
-
-//   const handleAddPost = () => {
-//     console.log("Prompt user to add a new post!");
-//   };
-
-//   const campaigns = [
-//     {
-//       title: "Adopt a Friend Month",
-//       description: "Encouraging pet adoptions and fostering this month!",
-//       postsCount: 120,
-//     },
-//     {
-//         title: "Adopt a Friend Month",
-//         description: "Encouraging pet adoptions and fostering this month!",
-//         postsCount: 120,
-//       },
-//   ];
-
-//   return (
-//     <>
-//       <div className="ActiveCampaigns">
-//         {campaigns.map((campaign, index) => (
-//           <ActiveCampaign
-//             key={index}
-//             title={campaign.title}
-//             description={campaign.description}
-//             postsCount={campaign.postsCount}
-//             onViewPosts={() => handleViewPosts(campaign)}
-//             onAddPost={handleAddPost}
-//           />
-//         ))}
-//       </div>
-
-//       {isModalOpen && selectedCampaign && (
-//         <div className="modal">
-//           <div className="modal-content">
-//             <h2>{selectedCampaign.title} - Posts</h2>
-//             <p>List of posts for the campaign...</p>
-//             <button onClick={() => setIsModalOpen(false)}>Close</button>
-//           </div>
-//         </div>
-//       )}
-//       </>
-//   );
-// };
-
-// export default ActiveCampaignCard;

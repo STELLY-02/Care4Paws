@@ -4,6 +4,8 @@ import EventCard from '../../../components/CommunityComponent/EventCard';
 import './CoordinatorEvent.css';
 import EventRegistration from '../../../components/CommunityComponent/eventRegistration';
 import axios from 'axios';
+import CuteDog3 from "../../../assets/cutedog3.png"
+import CuteDog2 from "../../../assets/cutedog2.png"
 
 const CoordinatorEvent = () => {
   const [events, setEvents] = useState([]); // Assuming you have a way to fetch events
@@ -56,7 +58,7 @@ const CoordinatorEvent = () => {
     setSelectedEvent(event);
     try {
       const token = localStorage.getItem('token'); // Get the token from localStorage
-      const response = await axios.get(`http://localhost:8080/api/communityPost/participants/${event.id}`, {
+      const response = await axios.get(`http://localhost:8085/api/communityPost/participants/${event.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -80,8 +82,17 @@ const CoordinatorEvent = () => {
   };
 
   return (
+    <>
+    <div className='coordinatorevent-header'>
+        <img src={CuteDog3} alt="" className="cute-dog" />
+        <h1>Snuggle into the community—because every friend counts!</h1>
+      </div>
     <div className="coordinator-event">
-      <button className='event-button' onClick={handleRegOpenModal}>Create New Event</button>
+      <div className='event-creation'>
+        <h3>New event coming up? Share now!</h3>
+        <button className='event-button' onClick={handleRegOpenModal}>Create New Event</button>
+      </div>
+      
       {isRegModalOpen && (
         <div className="modal-overlay" onClick={handleRegCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -90,6 +101,10 @@ const CoordinatorEvent = () => {
           </div>
         </div>
       )}
+      <div className='event-list-intro'>
+        <img src={CuteDog2} alt="" className="cute-dog2" />
+        <h3>Check your event here, click to view participant list below! </h3>
+        </div>
       <div className="event-card-container">
           {events.map((event, index) => (
             <EventCard
@@ -99,52 +114,55 @@ const CoordinatorEvent = () => {
               onClick={() => handleOpenModal(event)}
             />
           ))}
-        </div>
-        <div className="event-details">
-        {selectedEvent && (
-          <>
-            <h2>{selectedEvent.eventTitle}</h2>
-            <p>{new Date(selectedEvent.eventDate).toLocaleDateString()}</p>
-            <p>{selectedEvent.eventDescription}</p>
-            <h3>Participants</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Age</th>
-                  <th>Email</th>
-                  <th>Contact Number</th>
-                  <th>Guests</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array.isArray(participants) && participants.map((participant, index) => (
-                  <React.Fragment key={index}>
-                    <tr>
-                      <td>{participant.name}</td>
-                      <td>{participant.age}</td>
-                      <td>{participant.email}</td>
-                      <td>{participant.contactNumber}</td>
-                      <td>
-                        {participant.guests && participant.guests.length > 0 ? (
-                          <ul>
-                            {participant.guests.map((guest, guestIndex) => (
-                              <li key={guestIndex}>{guest.name} (Age: {guest.age})</li>
-                            ))}
-                          </ul>
-                        ) : (
-                          'No guests'
-                        )}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
-      </div>
+        </div>        
     </div>
+    <div className="event-bottom">
+    <div className="event-display">
+    {selectedEvent && (
+      <>
+        <h2>{selectedEvent.eventTitle}</h2>
+        <p>{new Date(selectedEvent.eventDate).toLocaleDateString()}</p>
+        <p>{selectedEvent.eventDescription}</p>
+        <h3>Participants</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Email</th>
+              <th>Contact Number</th>
+              <th>Guests</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.isArray(participants) && participants.map((participant, index) => (
+              <React.Fragment key={index}>
+                <tr>
+                  <td>{participant.name}</td>
+                  <td>{participant.age}</td>
+                  <td>{participant.email}</td>
+                  <td>{participant.contactNumber}</td>
+                  <td>
+                    {participant.guests && participant.guests.length > 0 ? (
+                      <ul>
+                        {participant.guests.map((guest, guestIndex) => (
+                          <li key={guestIndex}>{guest.name} (Age: {guest.age})</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      'No guests'
+                    )}
+                  </td>
+                </tr>
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </>
+    )}
+  </div>
+    </div>
+    </>
   );
 };
 

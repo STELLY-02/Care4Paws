@@ -1,12 +1,15 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './UserProfileLink.css';
 
 const UserProfileLink = ({ userId, avatarSrc, username }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    history.push(`/user-profile/${userId}`);
+    console.log("Navigating to user profile:", userId);
+    const currentUserId = localStorage.getItem("userId");
+    console.log("Current user ID:", currentUserId);
+    navigate(`/user-profile/${userId}`);
   };
 
   return (

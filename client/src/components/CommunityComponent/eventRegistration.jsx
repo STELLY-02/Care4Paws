@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { createEvent } from '../../api'; // Import the createEvent function
 import './EventRegistration.css';
 import Logo from '../../assets/Logo-fit.png';
+import axios from 'axios';
 
 const EventRegistration = ({ onClose }) => {
   const [eventName, setEventName] = useState('');
@@ -13,6 +14,9 @@ const EventRegistration = ({ onClose }) => {
   const [eventLocation, setEventLocation] = useState('');
   const [eventFee, setEventFee] = useState('');
   const [eventDescription, setEventDescription] = useState('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+
+  const fileInputRef = useRef(null);
 
   const handleTagChange = (tag) => {
     setEventTags((prevTags) =>
@@ -22,17 +26,28 @@ const EventRegistration = ({ onClose }) => {
     );
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setEventPic(reader.result); // Base64-encoded string
-      };
-      reader.onerror = (error) => {
-        console.error("Error reading image file:", error);
-      };
-      reader.readAsDataURL(file);
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0]; // Extract the first file
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('image', file); // Use the key 'image' as expected by the backend
+  
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post('http://localhost:8085/api/uploadPic/upload', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Let Axios handle Content-Type for FormData
+        },
+      });
+  
+      console.log("Image uploaded successfully:", response.data);
+      setUploadedImageUrl(response.data.data); // Cloudinary URL or uploaded file URL
+    } catch (error) {
+      console.error("Error uploading file:", error.response?.data || error.message);
     }
   };
 
@@ -40,9 +55,10 @@ const EventRegistration = ({ onClose }) => {
     event.preventDefault();
     // Automatically set event status to "Ongoing"
     const eventStatus = 'Ongoing';
+    const eventOrganizer = localStorage.getItem('userId');
     const eventDetails = {
       eventName,
-      eventPic,
+      eventPic: uploadedImageUrl,
       eventTags,
       eventType,
       eventStatus,
@@ -51,8 +67,13 @@ const EventRegistration = ({ onClose }) => {
       eventLocation,
       eventFee,
       eventDescription,
+      eventOrganizer
     };
     try {
+      if (!uploadedImageUrl) {
+        console.error("Image URL is missing. Upload an image before submitting.");
+        return;
+      }
       await createEvent(eventDetails);
       console.log("Event registered successfully");
       onClose();

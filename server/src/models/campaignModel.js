@@ -17,10 +17,13 @@ const campaignSchema = new mongoose.Schema({
       type: Date,
       required: true,
     },
-    posts: [{
+    posts: {
+      type: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'communityPost',
       }],
+      default: [], // Default value set here
+    },
   });
 
   module.exports = mongoose.model('Campaign', campaignSchema);

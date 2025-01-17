@@ -434,3 +434,30 @@ export const registerParticipants = async (participantData) => {
     throw error;
   }
 };
+
+export const createCampaigns = async (campaignsData) => {
+  console.log("Payload being sent:", campaignsData);
+  try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${BASE_URL}/communityPost/create-campaigns`, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(campaignsData),
+      });
+
+      console.log("Response status:", response.status);
+      console.log("Response body:", await response.text());
+
+      if (!response.ok) {
+          console.log(response);
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+  } catch (error) {
+      console.error("Error creating post:", error);
+      throw error;
+  }
+};

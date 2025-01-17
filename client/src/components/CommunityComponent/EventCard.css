@@ -44,6 +44,10 @@
     font-weight: bold;
     color: #493628;
   }
+
+  .event-pic{
+    margin: auto;
+  }
   
   .event-type {
     background-color: #795757;
@@ -68,6 +72,8 @@
   
   .event-details {
     flex: 1;
+    margin-top: 0;
+    padding: 0 20px;
   }
   
   .event-title {

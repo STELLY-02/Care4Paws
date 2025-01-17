@@ -4,7 +4,8 @@ import EventDetailsModal from "../../../components/CommunityComponent/EventDetai
 import "./UserEvent.css";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import EventRegister from "../../../components/CommunityComponent/eventRegistration"
-import { fetchEvents, fetchCoordinatorEvents } from '../../../api'; // Import the fetchEvents function
+import { fetchEvents, fetchCoordinatorEvents } from '../../../api';
+import CuteDog2 from "../../../assets/cutedog2.png"
 
 function Event() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,12 +60,10 @@ function Event() {
 
   return (
     <div>
-      <div className="Intro">
-      <FaRegCalendarCheck size={40}
-        color="493628"/>
-      <h2>Mark your calendars !</h2>
-      </div>
-      {role === "coordinator" && (
+      <div className='coordinator-header'>
+            <img src={CuteDog2} alt="" className="cute-dog" />
+            <h1>Mark your calendars !</h1>
+            {role === "coordinator" && (
         <>
           <p>Get ready to paws and play! Share your event to the users !</p>
           <button className="add-event-button" onClick={handleAddEventClick}>
@@ -75,6 +74,7 @@ function Event() {
       {role === "user" && (
         <p>Get ready to paws and play! Check out the events near you !</p>
       )}
+          </div>
       <div className="EventCardContainer">
         {eventData.map((event, index) => (
           <EventCard

@@ -30,6 +30,7 @@
   .PostCreationForm {
     display: flex;
     flex-direction: column;
+    background-color: #fafafa;
   }
   
   .PostCreationForm textarea {

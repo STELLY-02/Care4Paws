@@ -4,12 +4,13 @@ import { FaRegCommentDots } from "react-icons/fa6";
 import { LuDog } from "react-icons/lu";
 import { likePost, unlikePost, fetchCommentCount, deletePost } from '../../api';
 import CommentModal from './CommentModal';
+import UserProfileLink from './UserProfileLink';
 
 export const PostCard = ({ 
   _id,
+  postedBy,
   avatarSrc, 
   username, 
-  displayName, 
   imageSrc, 
   description, 
   timestamp, 
@@ -91,17 +92,21 @@ const handleLikeClick = async () => {
   return (
     <div className="post-card">
       <div className="postBox">
-        <div className="postHeader">
+        {/* <div className="postHeader">
           <img 
             src={avatarSrc} 
             alt={`${displayName}'s avatar`} 
             className="postAvatar"
           />
           <div className="userInfo">
-            {/* <div className="displayName">{displayName}</div> */}
             <div className="username">{username}</div>
           </div>
-        </div>
+        </div> */}
+        <UserProfileLink 
+          userId={postedBy}
+          avatarSrc={avatarSrc} 
+          username={username} 
+        />
         <button onClick={handleDelete}>Delete</button>
       </div>
       <div className='image-box'>

@@ -84,4 +84,26 @@ router.post('/:userId/follow', async (req, res) => {
     }
   });
 
+  router.get('/profile/:userId', verifyToken, async (req, res) => {
+    try {
+      const user = await User.findById(req.params.userId)
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      const profile = {
+        avatarSrc: user.avatarSrc ? user.avatarSrc : null,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        createdAt: user.createdAt,
+      };
+  
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+  });
+
 module.exports = router;

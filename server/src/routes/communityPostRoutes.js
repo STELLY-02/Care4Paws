@@ -135,7 +135,40 @@ router.get('/fetch-userfeed/:userId', verifyToken, async (req, res) => {
     const userIds = [user._id, ...user.following.map(followedUser => followedUser._id)];
     const posts = await communityPost.find({ postedBy: { $in: userIds } })
       .populate('likes', '_id') // Populate likes field
-      .populate('postedBy', 'username avatarSrc') // Populate author field with username and avatarSrc
+      .populate('postedBy', '_id username avatarSrc') // Populate author field with username and avatarSrc
+      .sort({ date: -1, timestamp: -1 });
+
+    // Transform the posts
+    const transformedPosts = posts.map(post => ({
+      _id: post._id,
+      caption: post.caption,
+      photo: post.photo,
+      timestamp: post.timestamp,
+      date: post.date,
+      likes: Array.isArray(post.likes) ? post.likes.length : 0,
+      userLikes: Array.isArray(post.likes) ? post.likes.map(user => user._id) : [],
+      comments: Array.isArray(post.comments) ? post.comments.length : 0,
+      postedBy: post.postedBy ? post.postedBy._id : null,
+      username: post.postedBy ? post.postedBy.username : null,
+      avatarSrc: post.postedBy ? post.postedBy.avatarSrc : null,
+    }));
+
+    res.json({ posts: transformedPosts });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+});
+
+router.get('/fetch-userpost/:userId', verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).populate('following', '_id');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const posts = await communityPost.find({ postedBy: user._id })
+      .populate('likes', '_id') // Populate likes field
+      .populate('postedBy', '_id username avatarSrc') // Populate author field with username and avatarSrc
       .sort({ date: -1, timestamp: -1 });
 
     // Transform the posts
@@ -427,9 +460,6 @@ router.get("/fetch-comments/:postId", async (req, res) => {
   });
 
   router.post('/create-event', verifyToken, async (req, res) => {
-    console.log("Request body:", req.body);
-    console.log("User from token:", req.user); // Check if user has _id
-
     const {
       eventName,
       eventPic,
@@ -444,12 +474,8 @@ router.get("/fetch-comments/:postId", async (req, res) => {
       eventOrganizer,
     } = req.body;
 
-    if (!eventName || !eventPic || !eventTags || !eventType || !eventStatus || !eventDate || !eventTime || !eventLocation || !eventFee || !eventDescription || !eventOrganizer) {
+    if (!eventName || !eventPic || !eventType || !eventStatus || !eventDate || !eventTime || !eventLocation || !eventFee || !eventDescription || !eventOrganizer) {
       return res.status(400).json({ error: "Missing required fields" });
-    }
-
-    if (!eventPic.startsWith("data:image/")) {
-        return res.status(400).json({ error: "Invalid photo format" });
     }
 
     try {
@@ -586,5 +612,34 @@ router.get('/participants/:eventId', verifyToken, async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+router.post("/create-campaigns", verifyToken, async (req, res) => {
+  console.log("Received request body:", req.body);
+  const { title, description } = req.body;
+
+  if (!title || !description) {
+    return res.status(400).json({ error: "Title and description are required." });
+  }
+
+  try {
+    const startDate = new Date(); // Current date
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + 1); // One month after the start date
+
+    const campaign = new Campaign({
+      title,
+      description,
+      startDate,
+      endDate,
+    });
+    console.log("tryingggg", campaign);
+    const savedCampaign = await campaign.save();
+    res.status(201).json({ success: true, campaign: savedCampaign });
+  } catch (error) {
+    console.error("Error creating campaign:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
 
 module.exports = router

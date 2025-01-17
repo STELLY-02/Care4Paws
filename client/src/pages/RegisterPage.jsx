@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import "./Register.css";
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../api';
 import Alert from '@mui/material/Alert'; // Material-UI Alert for notifications

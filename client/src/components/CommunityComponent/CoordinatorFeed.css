@@ -26,3 +26,102 @@
     gap: 20px;
 }
 
+.campaigns-form{
+    font-size: 30px;
+    margin-top: -20px;
+}
+
+.campaign-desc{
+    width: 100%
+}
+
+.coordinator-feed-left{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 20px;
+    padding: 30px;
+}
+
+.coordinator-functions{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 50px
+}
+
+.cute-dog{
+    width: 150px;
+}
+
+.cute-dog2{
+    width: 80px;
+}
+
+.coordinator-intro{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    background-color: #FFE2E2;
+    padding: 20px;
+    width: 100%;
+    gap: 30px;
+    border-radius: 20px;
+}
+
+.coordinator-header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFF0D1;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+}
+
+.coordinator-header h1{
+    text-align: center;
+    align-items: center;
+}
+
+.coordinator-feed-left h3{
+    text-align: center;
+    font-style: italic;
+    height: 40px;
+    line-height: 40px;
+}
+
+.coordinator-feed-right h3{
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 30px;
+}
+
+.functionbox{
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #eaeaea;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;}
+
+.functionbox :hover{
+    transform: scale(1.1);
+}
+
+.functionbox p{
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.icon-group{
+    display: flex;
+    justify-content: center;
+}

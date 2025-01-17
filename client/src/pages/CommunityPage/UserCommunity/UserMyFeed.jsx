@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { PostCard } from "../../../components/CommunityComponent/PostCard";
 import "./UserMyFeed.css";
 import { fetchUserAndFollowedPosts, createPost, fetchUserPosts } from "../../../api";
-import { BiSolidDog } from "react-icons/bi";
 import CommentModal from "../../../components/CommunityComponent/CommentModal";
 import axios from 'axios';
+import CuteDog from "../../../assets/dogwlove.png"
+import CuteDog2 from "../../../assets/cutedog2.png"
+
 
 function MyFeed() {
     // State to track new post content
@@ -129,11 +131,9 @@ function MyFeed() {
   return (
     <>
       <div className="MyFeed">
-      <div className="Greeting">
-      <BiSolidDog 
-        size={40}
-        color="493628"/>
-      <h2>Paws-itively happy to see you again !</h2>
+      <div className='coordinator-header'>
+        <img src={CuteDog} alt="" className="cute-dog" />
+        <h1>Welcome back, fur-tastic friend ! Let's see what's paw-pular today</h1>
       </div>
       <div className="PostCreationForm">     
         <h3>Share Something Today!</h3>
@@ -150,13 +150,17 @@ function MyFeed() {
           </div>
         </form>
       </div>
-      <h2>Paws on over to check out what’s new in town !</h2>
+      <div className='coordinator-intro'>
+        <img src={CuteDog2} alt="" className="cute-dog2" />
+        <h3>Paw Over and Check What's New in the Town! </h3>
+        </div>
       <div className="FeedPosts">
       {posts.length > 0 ? (
         posts.map((post, index) => (
           <PostCard
             key={index}
             _id={post._id}
+            postedBy={post.postedBy}
             avatarSrc={post.avatarSrc}
             username={post.username}
             imageSrc={post.photo}
