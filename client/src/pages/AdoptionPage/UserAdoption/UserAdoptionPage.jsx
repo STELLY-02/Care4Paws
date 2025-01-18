@@ -9,6 +9,7 @@ import MoveInIcon from "../../../assets/arrow-back-icon.svg";
 import MoveOutIcon from "../../../assets/arrow-forward-icon.svg";
 import CrossIcon from "../../../assets/cross-icon.png";
 import HeartIcon from "../../../assets/love-icon.png";
+import AdoptionForm from './AdoptionForm';
 
 const Adoption = () => {
   const [currentTab, setCurrentTab] = useState("All Pets");
@@ -17,6 +18,8 @@ const Adoption = () => {
   const [currentPetIndex, setCurrentPetIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAdoptionForm, setShowAdoptionForm] = useState(false);
+  const [selectedPet, setSelectedPet] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,11 +73,8 @@ const Adoption = () => {
 
   const handleLike = async (petId) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:5003/api/pets/${petId}/like`, {}, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      setCurrentPetIndex(prev => prev + 1);
+      setSelectedPet(animals[currentPetIndex]);
+      setShowAdoptionForm(true);
     } catch (error) {
       console.error('Error liking pet:', error);
     }
@@ -223,6 +223,17 @@ const Adoption = () => {
           )}
         </div>
       </div>
+      
+      {showAdoptionForm && (
+        <AdoptionForm 
+          pet={selectedPet}
+          onClose={() => setShowAdoptionForm(false)}
+          onSubmit={() => {
+            setCurrentPetIndex(prev => prev + 1);
+            fetchPets();
+          }}
+        />
+      )}
     </div>
   );
 };
