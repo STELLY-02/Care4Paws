@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './CoordinatorFeed.css';
 import {
   LivestreamPlayer,
   StreamVideo,
   StreamVideoClient,
   StreamCall,
-  useCallStateHooks,
+  useCallStateHooks, 
   ParticipantView,
   useCall,
+  StreamTheme
 } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
-import { createCampaigns, fetchUserPosts } from '../../api';
+import { createPost, createCampaigns, fetchUserAndFollowedPosts } from '../../api';
 import Logo from '../../assets/Logo-fit.png';
 import PostCreationModal from './PostCreationModal';
 import { PostCard } from "../CommunityComponent/PostCard";
@@ -19,11 +20,13 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { MdCampaign } from "react-icons/md";
 import { IoIosBookmarks } from "react-icons/io";
 import CuteDog2 from "../../assets/cutedog2.png"
+import axios from 'axios';
+//hello
 
 
-const apiKey = "qy27ve6mpk4e"; // Replace with your Stream API key
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJAc3RyZWFtLWlvL2Rhc2hib2FyZCIsImlhdCI6MTczNjI0NTE5MywiZXhwIjoxNzM2MzMxNTkzLCJ1c2VyX2lkIjoiIWFub24iLCJyb2xlIjoidmlld2VyIiwiY2FsbF9jaWRzIjpbImxpdmVzdHJlYW06bGl2ZXN0cmVhbF8yYTU2OWY4Zi1hMjZjLTRlNWMtYjBjZC03NzNjMzUwZWJlODciXX0.EUhnkoexEQwdv-IpFy7m2MJFjrr01N5qjpirr6sk32k"; // Replace with your Stream token
-const callId = "livestream_2a569f8f-a26c-4e5c-b0cd-773c350ebe87"; // Replace with your call ID
+const apiKey = "qy27ve6mpk4e"; 
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJAc3RyZWFtLWlvL2Rhc2hib2FyZCIsImlhdCI6MTczNjI0NTE5MywiZXhwIjoxNzM2MzMxNTkzLCJ1c2VyX2lkIjoiIWFub24iLCJyb2xlIjoidmlld2VyIiwiY2FsbF9jaWRzIjpbImxpdmVzdHJlYW06bGl2ZXN0cmVhbF8yYTU2OWY4Zi1hMjZjLTRlNWMtYjBjZC03NzNjMzUwZWJlODciXX0.EUhnkoexEQwdv-IpFy7m2MJFjrr01N5qjpirr6sk32k"; 
+const callId = "livestream_2a569f8f-a26c-4e5c-b0cd-773c350ebe87"; 
 
 const userId = localStorage.getItem("userId");
 
@@ -65,107 +68,18 @@ const MyLivestreamUI = () => {
   );
 };
 
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="coordinator-modal-overlay" onClick={onClose}>
+      <div className="coordinator-modal-content" onClick={(e) => e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
 function CoordinatorFeed() {
-  //campaign 
-  const [isCampaignsOpen, setIsCampaignsOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    // Prepare data to be sent
-    const campaignData = {
-      title,
-      description,
-    };
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("User is not authenticated.");
-      }
-
-      const response = await createCampaigns(campaignData);
-        setIsCampaignsOpen(false); 
-
-        setTitle('');  
-        setDescription(''); 
-    } catch (error) {
-      console.error("Error submitting campaign:", error);
-    }
-  }
-
-  const handleCampaignsModal = () => {
-    setIsCampaignsOpen(!isCampaignsOpen);
-  };
-
-
-  //posting
-  const [isPostOpen, setIsPostOpen] = useState(false);
-  const [newPost, setNewPost] = useState({ text:"", image: null });
-
-  const handleAddPost = () => {
-    setIsPostOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsPostOpen(false);
-  };
-
-  const handlePostChange = (e) => {
-    setNewPost({ ...newPost, text: e.target.value });
-  };
-
-  const handleImageUpload = async (file) => {
-    console.log("handleImageUpload called");
-    console.log("Selected file:", file);
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:8085/api/uploadPic/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      console.log("Image uploaded:", response.data);
-      return response.data.data; // Cloudinary URL
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  };
-
-  const handleDeletePost = () => {
-    console.log("Deleting post with ID:");
-  };
-
-  const handlePostSubmit = async (e) => {
-          e.preventDefault();
-          try {
-            let imageUrl = newPost.image;
-            const newPostData = {
-              caption: newPost.text,
-              photo: imageUrl,
-            };
-    
-            console.log("Submitting post data:", newPostData);
-        
-            await createPost(newPostData);
-            const updatedPosts = await fetchUserPosts(campaign.title);
-            setPosts(updatedPosts);
-        
-            setNewPost({ text: "", image: null });
-            if (fileInputRef.current) {
-              fileInputRef.current.value = ""; // Reset the file input
-          }
-          } catch (error) {
-            console.error("Error submitting post:", error);
-          }
-        };
-
   //feed & comment 
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
@@ -179,7 +93,7 @@ function CoordinatorFeed() {
           console.log("current role: ", role);
           console.log("Fetching posts for user ID:", userId);
           let posts = [];
-          posts = await fetchUserPosts(userId);
+          posts = await fetchUserAndFollowedPosts(userId);
           
           console.log("Fetched posts:", posts);
           setPosts(posts || []);
@@ -212,6 +126,132 @@ function CoordinatorFeed() {
         setIsCommentOpen(true);
       }
     }, [selectedPost]);
+
+
+  //campaign 
+  const [isCampaignsOpen, setIsCampaignsOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const handleOpenCampaignModal = () => setIsCampaignsOpen(true);
+  const handleCloseCampaignModal = () => setIsCampaignsOpen(false);
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    // Prepare data to be sent
+    const campaignData = {
+      title,
+      description,
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("User is not authenticated.");
+      }
+
+      const response = await createCampaigns(campaignData);
+      alert("Campaign created successfully!");
+        setTitle('');  
+        setDescription('');
+        handleCloseCampaignModal(); 
+    } catch (error) {
+      console.error("Error submitting campaign:", error);
+      alert("Campaign created successfully!");
+      setTitle('');  
+      setDescription('');
+       handleCloseCampaignModal(); 
+    }
+  }
+
+
+  //posting
+  const [isPostOpen, setIsPostOpen] = useState(false);
+  const [newPost, setNewPost] = useState({ text:"", image: null });
+  const handleAddPost = () => setIsPostOpen(true);
+  const handleCancelPostModal = () => setIsPostOpen(false);
+  const fileInputRef = useRef(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+
+  const handlePostChange = (e) => {
+    setNewPost({ ...newPost, text: e.target.value });
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0]; 
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post('http://localhost:8085/api/uploadPic/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("Image uploaded:", response.data);
+      setUploadedImageUrl(response.data.data); // Cloudinary URL
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
+  const handleDeletePost = () => {
+    console.log("Deleting post with ID:");
+  };
+
+  const waitForUploadedImage = async () => {
+    const maxRetries = 10; // Limit retries to prevent infinite loops
+    const retryDelay = 500; // Retry every 500ms
+    let retries = 0;
+  
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        if (uploadedImageUrl) {
+          clearInterval(interval);
+          resolve(); // Resolve when uploadedImageUrl is available
+        } else if (retries >= maxRetries) {
+          clearInterval(interval);
+          reject(new Error("Image upload timed out. Please try again."));
+        } else {
+          retries++;
+        }
+      }, retryDelay);
+    });
+  };
+
+  const handlePostSubmit = async (e) => {
+          e.preventDefault();
+          try {
+
+            await waitForUploadedImage();
+
+            const newPostData = {
+              caption: newPost.text,
+              photo: uploadedImageUrl,
+            };
+    
+            console.log("Submitting post data:", newPostData);
+        
+            await createPost(newPostData);
+            const userId = localStorage.getItem("userId");
+            const updatedPosts = await fetchUserAndFollowedPosts(userId);
+            setPosts(updatedPosts);
+
+            alert("Post submitted successfully!");
+        
+            setNewPost({ text: "", image: null });
+            if (fileInputRef.current) {
+              fileInputRef.current.value = ""; // Reset the file input
+          }
+          handleCancelPostModal()
+          } catch (error) {
+            console.error("Error submitting post:", error);
+            alert("Failed to submit post. Please try again.");
+          }
+        };
 
   //live
   const [isLive, setIsLive] = useState(false);
@@ -263,13 +303,10 @@ function CoordinatorFeed() {
             size={45}
             color="493628"/>
           <p>Any idea to help the pet community? Initiate a campaign now!</p>
-          <button onClick={handleCampaignsModal}>Initiate Campaign</button>
-            <div id="campaigns">
-          {isCampaignsOpen && (
-          <div className="modal" onClick={handleCampaignsModal}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()} >
-            <img src={Logo} alt="" className="logo-active" />
-              <h2 className='campaigns-form'>Create Campaign</h2>
+          <button onClick={handleOpenCampaignModal}>Initiate Campaign</button>
+          <Modal isOpen={isCampaignsOpen} onClose={handleCloseCampaignModal}>
+              <img src={Logo} alt="" className="logo-active" />
+              <h2 className="campaigns-form">Create Campaign</h2>
               <form onSubmit={handleFormSubmit}>
                 <label>
                   Campaign Title:
@@ -283,21 +320,18 @@ function CoordinatorFeed() {
                 <label>
                   Description:
                   <textarea
-                  className='campaign-desc'
+                    className="campaign-desc"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     required
                   />
                 </label>
-                <button type="submit">Submit</button>
-                <button type="button" onClick={handleCampaignsModal}>
+                <button type="submit" className='modal-button'>Submit</button>
+                {/* <button type="button" onClick={handleCloseCampaignModal}>
                   Close
-                </button>
+                </button> */}
               </form>
-            </div>
-          </div>
-        )}
-        </div>
+            </Modal>
           </div>   
       <div className="functionbox">
         <IoIosBookmarks 
@@ -305,17 +339,31 @@ function CoordinatorFeed() {
           color="493628"/>
           <p>Every paw has a story. Share yours and connect today!</p>
           <button onClick={handleAddPost}>Create Post</button>
-          <div id="create-post">
-              <PostCreationModal
-              isOpen={isPostOpen}
-              onClose={handleCloseModal}
-              campaignTitle=""
-              handlePostSubmit={handlePostSubmit}
-              newPost={newPost}
-              handlePostChange={handlePostChange}
-              handleImageUpload={handleImageUpload}
-            />
-          </div>
+          {isPostOpen && (
+          <Modal isOpen={isPostOpen} onClose={handleCancelPostModal}>
+            <img src={Logo} alt="" className="logo-active" />
+            <h2 className="campaigns-form">Create Post</h2>
+            <form onSubmit={handlePostSubmit}>
+              <label>
+                Post Text:
+                <textarea
+                  className="campaign-desc"
+                  value={newPost.text}
+                  onChange={handlePostChange}
+                  required
+                />
+              </label>
+              <label>
+                Upload Image:
+                <input id="choose-file" type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} />
+              </label>
+              <button type="submit">Submit</button>
+              {/* <button type="button" onClick={handleCancelPostModal}>
+                Close
+              </button> */}
+            </form>
+          </Modal>
+        )}
           </div>
         </div>
       </div>

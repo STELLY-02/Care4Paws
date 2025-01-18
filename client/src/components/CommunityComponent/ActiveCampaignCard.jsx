@@ -12,6 +12,7 @@ const ActiveCampaignCard = ({ campaign }) => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ text: campaign.title, image: null });
   const fileInputRef = useRef(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
 
   const handleAddPost = () => {
     setIsModalOpen(true);
@@ -40,7 +41,7 @@ const ActiveCampaignCard = ({ campaign }) => {
         }
       });
       console.log("Image uploaded:", response.data);
-      return response.data.data; // Cloudinary URL
+      setUploadedImageUrl(response.data.data); // Cloudinary URL
     } catch (error) {
       console.error("Error uploading image:", error);
     }
@@ -50,13 +51,33 @@ const handleDeletePost = () => {
   console.log("Deleting post with ID:");
 };
 
+const waitForUploadedImage = async () => {
+  const maxRetries = 10; // Limit retries to prevent infinite loops
+  const retryDelay = 500; // Retry every 500ms
+  let retries = 0;
+
+  return new Promise((resolve, reject) => {
+    const interval = setInterval(() => {
+      if (uploadedImageUrl) {
+        clearInterval(interval);
+        resolve(); // Resolve when uploadedImageUrl is available
+      } else if (retries >= maxRetries) {
+        clearInterval(interval);
+        reject(new Error("Image upload timed out. Please try again."));
+      } else {
+        retries++;
+      }
+    }, retryDelay);
+  });
+};
+
   const handlePostSubmit = async (e) => {
         e.preventDefault();
         try {
-          let imageUrl = newPost.image;
+          await waitForUploadedImage();
           const newPostData = {
             caption: newPost.text,
-            photo: imageUrl,
+            photo: uploadedImageUrl,
           };
   
           console.log("Submitting post data:", newPostData);

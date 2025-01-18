@@ -3,6 +3,8 @@ import "./Register.css";
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../api';
 import Alert from '@mui/material/Alert'; // Material-UI Alert for notifications
+import care4pawsLogo from "../assets/Logo_Care4Paws.png"
+import { Link } from "react-router-dom";
 
 function RegisterPage() {
     const [step, setStep] = useState(1);
@@ -103,73 +105,101 @@ function RegisterPage() {
     };
 
     return (
-        <div>
-            <h1>Register</h1>
-            {/* Show error or success messages conditionally */}
-            {error && <Alert severity="error">{error}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
-            
-            <form onSubmit={handleSubmit}>
-                <select name="role" value={formData.role} onChange={handleChange} required>
-                    <option value="">Select Role</option>
-                    <option value="coordinator">Coordinator</option>
-                    <option value="user">User</option>
-                </select>
-                <input
-                    name="username"
-                    placeholder="Username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                />
-                <input
+        <div className="register-container">
+          <div className= "register-content">
+                  <div className="welcome-section1">
+                    <h1>Welcome to <span className="care4paws-title">Care4Paws</span></h1>
+                    <p>Find your loyal companion and connect with fellow pet lovers.<br />
+                      Together, we can share, care, and make a difference.
+                    </p>
+       
+                    <div className="logo-container">
+                      <img src={care4pawsLogo} alt="Care4Paws Logo" className="logo" />
+            </div>
+          </div>
+          <div className="register-section">
+            <h2>Register</h2>
+            <p>First create your account.</p>
+            <form className="register-form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                  <input
+                  name="firstName"
+                  placeholder="First Name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+              />
+                  <input
+                  name="lastName"
+                  placeholder="Last Name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+              />
+              </div>
+              <div className="form-row">
+                  <input
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+              />
+                  <input
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+              />
+              </div>
+    
+              <div className="form-row">
+              <input
+                        name="username"
+                        placeholder="Username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
                     name="avaterSrc"
                     type="file"
                     accept="image/*"
                     onChange={handleProPicUpload} 
                     required
                 />
-                <input
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    name="firstName"
-                    placeholder="First Name"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    name="lastName"
-                    placeholder="Last Name"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    name="phoneNumber"
-                    placeholder="Phone Number"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit">Register</button>
+            </div>
+    
+              <div className="role-row">
+              <select name="role" value={formData.role} onChange={handleChange} required>
+              <option value="">Select Role</option>
+              <option value="coordinator">Coordinator</option>
+              <option value="user">User</option>
+          </select>
+                </div>
+              <div className="checkbox-row">
+                <label>
+                  <input type="checkbox" /> Remember me
+                </label>
+                <label>
+                  <input type="checkbox" /> I agree to the Terms and Privacy policy
+                </label>
+              </div>
+              <button type="submit" className="create-account-btn">Create account</button>
             </form>
+            <p>Already have an account? <Link to="/">Sign In</Link></p>
+          </div>
+          
+          </div>
+          <footer>
+            Copyright © Care4Paws, 2020 - 2024. All rights reserved.
+          </footer>
         </div>
-    );
+        
+      );
 }
 
 export default RegisterPage;

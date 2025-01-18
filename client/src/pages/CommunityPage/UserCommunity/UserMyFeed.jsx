@@ -15,6 +15,7 @@ function MyFeed() {
       image: null,
     });
     const fileInputRef = useRef(null);
+    const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   
     // State to retrieve list of posts
     const [posts, setPosts] = useState([]);
@@ -63,24 +64,40 @@ function MyFeed() {
           }
         });
         console.log("Image uploaded:", response.data);
-        return response.data.data; // Cloudinary URL
+        setUploadedImageUrl(response.data.data); // Cloudinary URL
       } catch (error) {
         console.error("Error uploading image:", error);
       }
+    };
+
+    const waitForUploadedImage = async () => {
+      const maxRetries = 10; // Limit retries to prevent infinite loops
+      const retryDelay = 500; // Retry every 500ms
+      let retries = 0;
+    
+      return new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+          if (uploadedImageUrl) {
+            clearInterval(interval);
+            resolve(); // Resolve when uploadedImageUrl is available
+          } else if (retries >= maxRetries) {
+            clearInterval(interval);
+            reject(new Error("Image upload timed out. Please try again."));
+          } else {
+            retries++;
+          }
+        }, retryDelay);
+      });
     };
   
     // Handle post submission
     const handlePostSubmit = async (e) => {
       e.preventDefault();
       try {
-        let imageUrl = newPost.image;
-        if (fileInputRef.current && fileInputRef.current.files[0]) {
-          imageUrl = await handleImageUpload(fileInputRef.current.files[0]);
-        }
-
+        await waitForUploadedImage();
         const newPostData = {
           caption: newPost.text,
-          photo: imageUrl,
+          photo: uploadedImageUrl,
         };
 
         console.log("Submitting post data:", newPostData);
@@ -89,6 +106,7 @@ function MyFeed() {
         const userId = localStorage.getItem("userId");
         const updatedPosts = await fetchUserAndFollowedPosts(userId);
         setPosts(updatedPosts);
+        alert("Post submitted successfully!");
     
         setNewPost({ text: "", image: null });
         if (fileInputRef.current) {
@@ -96,6 +114,7 @@ function MyFeed() {
       }
       } catch (error) {
         console.error("Error submitting post:", error);
+        alert("Failed to submit post. Please try again.");
       }
     };
 

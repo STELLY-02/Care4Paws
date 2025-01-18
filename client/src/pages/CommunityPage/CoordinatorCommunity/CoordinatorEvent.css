@@ -1,17 +1,17 @@
-.coordinator-event{
+.biggg-container{
   width: 100%;
-  max-width: fit-content;
+}
+
+.coordinator-event{
+  width: fit-content;
   display: flex;
   flex-direction: column;
-  overflow: scroll;
-  overflow-x: auto;
 }
   .event-button{
     width: fit-content;
   }
 
   .coordinatorevent-header{
-    width: 100%;
     display: flex;
     flex-direction: column;
     background-color: #FFF0D1;
@@ -55,12 +55,9 @@
   .event-bottom{
   display: flex;
   flex-direction: column;
-  width: 100%;
   position: relative;
   left: 0;
   margin: 0;
-  width: 100%;
-  overflow: hidden;
   }
 
   .event-display{

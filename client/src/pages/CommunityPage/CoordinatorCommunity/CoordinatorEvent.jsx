@@ -82,7 +82,7 @@ const CoordinatorEvent = () => {
   };
 
   return (
-    <>
+    <div className='biggg-container'>
     <div className='coordinatorevent-header'>
         <img src={CuteDog3} alt="" className="cute-dog" />
         <h1>Snuggle into the community—because every friend counts!</h1>
@@ -162,7 +162,7 @@ const CoordinatorEvent = () => {
     )}
   </div>
     </div>
-    </>
+    </div>
   );
 };
 
