@@ -1,50 +1,13 @@
 const Pet = require('../models/Pets');
+const User = require('../models/userModel');
 
-const addPet = async (req, res) => {
-    try {
-        // Debug logs
-        console.log('Request body:', req.body);
-        console.log('Request file:', req.file);
-        console.log('Request user:', req.user);
-
-        if (!req.file) {
-            console.error('No file uploaded');
-            return res.status(400).json({ error: 'Photo is required' });
-        }
-
-        const petData = {
-            name: req.body.name,
-            age: Number(req.body.age),
-            breed: req.body.breed,
-            vaccinated: req.body.vaccinated === 'true',
-            description: req.body.description,
-            photo: `/uploads/${req.file.filename}`, // Store the path
-            createdBy: req.user.id
-        };
-
-        console.log('Creating pet with data:', petData);
-
-        const pet = new Pet(petData);
-        const savedPet = await pet.save();
-
-        console.log('Pet saved successfully:', savedPet);
-
-        res.status(201).json({
-            message: 'Pet added successfully',
-            pet: savedPet
-        });
-    } catch (error) {
-        console.error('Error adding pet:', error);
-        res.status(500).json({ 
-            error: 'Failed to add pet',
-            details: error.message 
-        });
-    }
-};
-
+// Get all pets
 const getPets = async (req, res) => {
     try {
-        const pets = await Pet.find().populate('createdBy', 'username role');
+        const pets = await Pet.find()
+            .populate('coordinator', 'username email')
+            .populate('adoptedBy', 'username');
+        
         res.json(pets);
     } catch (error) {
         console.error('Error getting pets:', error);
@@ -52,7 +15,69 @@ const getPets = async (req, res) => {
     }
 };
 
+// Add new pet (coordinators only)
+const addPet = async (req, res) => {
+    try {
+        if (req.user.role !== 'coordinator') {
+            return res.status(403).json({ error: 'Only coordinators can add pets' });
+        }
+
+        const petData = {
+            ...req.body,
+            coordinator: req.user._id,
+            photo: `/uploads/${req.file.filename}`
+        };
+
+        const pet = new Pet(petData);
+        await pet.save();
+
+        res.status(201).json({
+            message: 'Pet added successfully',
+            pet: await pet.populate('coordinator', 'username email')
+        });
+    } catch (error) {
+        console.error('Error adding pet:', error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Adopt a pet (users only)
+const adoptPet = async (req, res) => {
+    try {
+        if (req.user.role !== 'user') {
+            return res.status(403).json({ error: 'Only users can adopt pets' });
+        }
+
+        const pet = await Pet.findById(req.params.id);
+        if (!pet) {
+            return res.status(404).json({ error: 'Pet not found' });
+        }
+
+        if (pet.status !== 'available') {
+            return res.status(400).json({ error: 'Pet is not available for adoption' });
+        }
+
+        pet.status = 'adopted';
+        pet.adoptedBy = req.user._id;
+        await pet.save();
+
+        // Add pet to user's adopted pets
+        await User.findByIdAndUpdate(req.user._id, {
+            $push: { adoptedPets: pet._id }
+        });
+
+        res.json({
+            message: 'Pet adopted successfully',
+            pet: await pet.populate(['coordinator', 'adoptedBy'])
+        });
+    } catch (error) {
+        console.error('Error adopting pet:', error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
 module.exports = {
+    getPets,
     addPet,
-    getPets
+    adoptPet
 };

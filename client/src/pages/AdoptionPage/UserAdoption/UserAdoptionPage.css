@@ -1,0 +1,359 @@
+.Adoption {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.homebottom {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: white;
+  transition: width 0.3s;
+  border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.closed {
+  width: 60px;
+}
+
+.sidebarList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebarBottom {
+  margin-top: auto;
+  padding: 20px;
+}
+
+.sidebarBottomImage {
+  width: 100%;
+  max-width: 200px;
+  display: block;
+  margin: 0 auto;
+}
+
+.sidebarToggle {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  background-color: #f5f5f5;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.adoption-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Prevent vertical scrolling */
+  }
+  
+  .adoption-content {
+    display: flex;
+    flex: 1;
+  }
+  
+  .tab-navigation {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .tab-navigation button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+  
+  .tab-navigation button.active {
+    background-color: #fff0d1;
+    color: rgb(0, 0, 0);
+  }
+  
+  .swipe-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; /* Prevent vertical scrolling */
+  }
+  
+  .photo-gallery {
+    display: flex;
+    align-items: center;
+  }
+  
+  .left-photo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .right-photos {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .animal-photo {
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 10px;
+    transition: transform 0.3s ease;
+  }
+  
+  .animal-photo.large {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .animal-photo.small {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .swipe-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .swipe-buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin: 0 20px;
+  }
+  
+  .cross-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .love-icon {
+    width: 35px; /* Smaller size for the love icon */
+    height: 35px; /* Smaller size for the love icon */
+  }
+  
+  .all-pets {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .pet-box {
+    display: flex;
+    width: 500px; /* Increase the width of each box */
+    height: 300px; /* Increase the height of each box */
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .pet-photo {
+    width: 150px; /* Increase the width of the pet photo */
+    height: 150px; /* Increase the height of the pet photo */
+    object-fit: cover;
+  }
+  
+  .pet-details {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative; /* Position relative for the button */
+    font-size: 14px;
+  }
+  
+  .pet-details p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+
+.nav-text {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 8px 0px 8px 16px;
+  height: 60px;
+}
+
+.nav-text a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-radius: 4px;
+}
+
+.nav-text a:hover {
+  background-color: #f5f5f5;
+}
+
+.nav-text .icon {
+  margin-right: 15px;
+}
+
+.nav-text .icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.sidebar.closed .nav-text a {
+  padding: 0 20px;
+}
+
+.sidebar.closed .nav-text .title {
+  display: none;
+}
+
+/* Add these styles for the Swipe/Match interface */
+.swipe-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  min-height: 500px;
+}
+
+.pet-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  text-align: center;
+}
+
+.pet-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.pet-info {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.pet-info h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.pet-info p {
+  margin: 8px 0;
+  color: #666;
+}
+
+.swipe-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.pass-button,
+.like-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pass-button {
+  background: #ff4d4d;
+  color: white;
+}
+
+.like-button {
+  background: #4CAF50;
+  color: white;
+}
+
+.pass-button:hover,
+.like-button:hover {
+  transform: scale(1.1);
+}
+
+.no-pets {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2em;
+  color: #666;
+}
+
+/* Style for active tab */
+.tab-navigation button.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cross-icon,
+.love-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.pass-button,
+.like-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.pass-button {
+  background: #ff4d4d;
+}
+
+.like-button {
+  background: #4CAF50;
+}
+
+.pass-button:hover,
+.like-button:hover {
+  transform: scale(1.1);
+}
+
+.pass-button img,
+.like-button img {
+  filter: brightness(0) invert(1); /* Makes the icons white */
+}

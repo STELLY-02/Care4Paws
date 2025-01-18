@@ -7,8 +7,7 @@ const petSchema = new mongoose.Schema({
     },
     age: {
         type: Number,
-        required: [true, 'Pet age is required'],
-        min: [0, 'Age cannot be negative']
+        required: [true, 'Pet age is required']
     },
     breed: {
         type: String,
@@ -26,15 +25,15 @@ const petSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Pet photo is required']
     },
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: [true, 'Pet must be created by a user']
-    },
     status: {
         type: String,
-        enum: ['available', 'adopted', 'pending'],
+        enum: ['available', 'pending', 'adopted'],
         default: 'available'
+    },
+    coordinator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: [true, 'Pet must have a coordinator']
     },
     adoptedBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -42,36 +41,11 @@ const petSchema = new mongoose.Schema({
         default: null
     }
 }, {
-    timestamps: true,  // Adds createdAt and updatedAt fields
-    toJSON: {
-        virtuals: true
-    },
-    toObject: {
-        virtuals: true
-    }
+    timestamps: true
 });
 
-// Virtual for photo URL
-petSchema.virtual('photoUrl').get(function() {
-    if (this.photo) {
-        return `/uploads/${this.photo}`;
-    }
-    return null;
-});
-
-// Pre-save middleware to ensure photo exists
-petSchema.pre('save', function(next) {
-    if (!this.photo) {
-        next(new Error('Pet photo is required'));
-    }
-    next();
-});
-
-// Add indexes for better query performance
-petSchema.index({ status: 1 });
-petSchema.index({ createdBy: 1 });
-petSchema.index({ adoptedBy: 1 });
+// Add index for better query performance
+petSchema.index({ status: 1, coordinator: 1 });
 
 const Pet = mongoose.model('Pet', petSchema);
-
 module.exports = Pet;

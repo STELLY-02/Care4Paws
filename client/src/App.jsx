@@ -13,6 +13,7 @@ import UserCommunityPage from './pages/CommunityPage/UserCommunity/UserCommunity
 import CoordinatorCommunityPage from './pages/CommunityPage/CoordinatorCommunity/CoordinatorCommunityPage';
 import Landing from './pages/Landing';
 import CoordinatorAdoptionPage from './pages/AdoptionPage/CoorAdoption/CoordinatorAdoptionPage';
+import UserAdoptionPage from './pages/AdoptionPage/UserAdoption/UserAdoptionPage';
 
 function App() {
     return (
@@ -53,6 +54,7 @@ function App() {
                                 <Route path="" element={<UserDashboard />} />
                                 <Route path="/be-pet-experts" element={<Chatbot />} />
                                 <Route path="/community" element={<UserCommunityPage />} />
+                                <Route path="/adoption" element={<UserAdoptionPage />} />
                             </Routes>
                         </ProtectedRoute>
                     }

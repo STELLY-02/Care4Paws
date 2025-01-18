@@ -1,56 +1,45 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema(
-    {
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-            match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, // Ensure email format
-        },
-        password: {
-            type: String,
-            required: true,
-            minlength: 8, 
-        },
-        role: {
-            type: String,
-            required: true,
-            enum: ["admin", "coordinator", "user"],
-        },
-        username: {
-            type: String,
-            required: true,
-            minlength: 3, 
-        },
-        firstName: {
-            type: String,
-            required: true,
-        },
-        lastName: {
-            type: String,
-            required: true,
-        },
-        phoneNumber: {
-            type: String,
-            required: true,
-        },
-        avatarSrc:{
-            type: String,
-            default: "https://res.cloudinary.com/dkkgmzpqd/image/upload/v1633663664/avatars/avatar-1_yljv8v.png",
-        },
-        description:{
-            type: String,
-            //required: true,
-        },
-        following: [{ 
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'User' 
-        }]
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: [true, 'Username is required'],
+        unique: true
     },
-    {
-        timestamps: true,
-    }
-);
+    email: {
+        type: String,
+        required: [true, 'Email is required'],
+        unique: true
+    },
+    password: {
+        type: String,
+        required: [true, 'Password is required']
+    },
+    role: {
+        type: String,
+        enum: ['user', 'coordinator'],
+        default: 'user'
+    },
+    adoptedPets: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Pet'
+    }]
+}, {
+    timestamps: true
+});
 
-module.exports = mongoose.model("User", userSchema);
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
+});
+
+// Method to check password
+userSchema.methods.matchPassword = async function(enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
+const User = mongoose.model('User', userSchema);
+module.exports = User;
