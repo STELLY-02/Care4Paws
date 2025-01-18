@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
 }
 
 .homebottom {
@@ -53,6 +54,7 @@
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .adoption-page {
@@ -87,12 +89,13 @@
   }
   
   .swipe-container {
-    position: relative;
-    width: 100%;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    overflow: hidden; /* Prevent vertical scrolling */
+    padding: 20px;
+    height: calc(100vh - 180px);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   
   .photo-gallery {
@@ -132,8 +135,10 @@
   
   .swipe-buttons {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 0 40px;
     margin-top: 20px;
+    overflow: hidden; /* Prevent scrollbar */
   }
   
   .swipe-buttons button {
@@ -248,9 +253,10 @@
   max-width: 400px;
   padding: 20px;
   text-align: center;
+  overflow: hidden;
 }
 
-.pet-card img {
+.pet-card img.pet-photo {
   width: 100%;
   height: 300px;
   object-fit: cover;
@@ -275,35 +281,43 @@
 
 .swipe-buttons {
   display: flex;
-  justify-content: center;
-  gap: 30px;
+  justify-content: space-between;
+  padding: 0 40px;
   margin-top: 20px;
+  overflow: hidden; /* Prevent scrollbar */
 }
 
 .pass-button,
 .like-button {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   border: none;
-  font-size: 24px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease; /* Only transition background color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: white;
+  border: 2px solid #ff4d4d;
 }
 
-.pass-button {
-  background: #ff4d4d;
-  color: white;
-}
-
-.like-button {
-  background: #4CAF50;
-  color: white;
+.button-icon {
+  width: 25px;
+  height: 25px;
+  filter: invert(50%) sepia(100%) saturate(1000%) hue-rotate(320deg) brightness(100%);
 }
 
 .pass-button:hover,
 .like-button:hover {
-  transform: scale(1.1);
+  /* Removed transform: scale() */
+  background-color: #ff4d4d;
+}
+
+.pass-button:hover .button-icon,
+.like-button:hover .button-icon {
+  filter: invert(100%);
 }
 
 .no-pets {
@@ -323,29 +337,6 @@
 .love-icon {
   width: 30px;
   height: 30px;
-  object-fit: contain;
-}
-
-.pass-button,
-.like-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0;
-}
-
-.pass-button {
-  background: #ff4d4d;
-}
-
-.like-button {
-  background: #4CAF50;
 }
 
 .pass-button:hover,
@@ -353,7 +344,15 @@
   transform: scale(1.1);
 }
 
-.pass-button img,
-.like-button img {
-  filter: brightness(0) invert(1); /* Makes the icons white */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.main-content::-webkit-scrollbar,
+.swipe-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.main-content, 
+.swipe-container {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

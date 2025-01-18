@@ -120,14 +120,14 @@ const Adoption = () => {
               onClick={handlePass}
               aria-label="Pass"
             >
-              <img src={CrossIcon} alt="Pass" className="cross-icon" />
+              <img src={CrossIcon} alt="Pass" className="button-icon" />
             </button>
             <button 
               className="like-button"
               onClick={() => handleLike(currentPet._id)}
               aria-label="Like"
             >
-              <img src={HeartIcon} alt="Like" className="love-icon" />
+              <img src={HeartIcon} alt="Like" className="button-icon" />
             </button>
           </div>
         </div>
