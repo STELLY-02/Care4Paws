@@ -76,8 +76,41 @@ const adoptPet = async (req, res) => {
     }
 };
 
+const createPet = async (req, res) => {
+    try {
+        const { name, age, breed, vaccinated, description, photo } = req.body;
+        
+        console.log('Creating pet with coordinator:', req.user._id);
+
+        const pet = new Pet({
+            name,
+            age,
+            breed,
+            vaccinated,
+            description,
+            photo,
+            createdBy: req.user._id,  // This sets the coordinator
+            status: 'available'
+        });
+
+        console.log('New pet object:', pet);
+
+        await pet.save();
+        
+        // Populate the coordinator details
+        const populatedPet = await Pet.findById(pet._id)
+            .populate('createdBy', 'username email');
+
+        res.status(201).json(populatedPet);
+    } catch (error) {
+        console.error('Error creating pet:', error);
+        res.status(500).json({ error: 'Error creating pet' });
+    }
+};
+
 module.exports = {
     getPets,
     addPet,
-    adoptPet
+    adoptPet,
+    createPet
 };

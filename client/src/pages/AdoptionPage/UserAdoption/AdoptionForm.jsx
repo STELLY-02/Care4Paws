@@ -58,16 +58,65 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.post(`http://localhost:5003/api/pets/${pet._id}/adopt`, formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            if (!token) {
+                alert('Please login first');
+                return;
+            }
+
+            const url = `http://localhost:5003/api/adopt/${pet._id}/submit`;
+            console.log('Submitting adoption form to:', url);
+
+            const requestData = {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                contactNumber: formData.contactNumber,
+                occupation: formData.occupation
+            };
+
+            const response = await axios.post(
+                url,
+                requestData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 }
+            );
+
+            console.log('Adoption form submitted successfully:', response.data);
+            
+            // Show success message to user
+            alert('Adoption form submitted successfully!');
+            
+            // Clear form and close
+            setFormData({
+                firstName: '',
+                lastName: '',
+                email: '',
+                contactNumber: '',
+                occupation: ''
             });
+            
+            // Call onSubmit and onClose callbacks
             onSubmit && onSubmit();
-            onClose();
+            onClose && onClose();
+            
         } catch (error) {
-            console.error('Error submitting adoption form:', error);
-            alert(error.response?.data?.error || 'Failed to submit adoption form');
+            if (error.response) {
+                // Server responded with an error
+                console.error('Server error:', error.response.data);
+                alert(error.response.data.error || 'Failed to submit adoption form');
+            } else if (error.request) {
+                // Request was made but no response
+                console.error('No response from server');
+                alert('No response from server. Please try again.');
+            } else {
+                // Error in request setup
+                console.error('Request error:', error.message);
+                alert('Error submitting form. Please try again.');
+            }
         }
     };
 

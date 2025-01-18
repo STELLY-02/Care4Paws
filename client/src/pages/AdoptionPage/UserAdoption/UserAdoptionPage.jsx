@@ -213,6 +213,15 @@ const Adoption = () => {
                       <p><strong>Breed:</strong> {animal.breed}</p>
                       <p><strong>Vaccinated:</strong> {animal.vaccinated ? 'Yes' : 'No'}</p>
                       <p><strong>Description:</strong> {animal.description}</p>
+                      <button 
+                        className="adopt-button"
+                        onClick={() => {
+                          setSelectedPet(animal);
+                          setShowAdoptionForm(true);
+                        }}
+                      >
+                        Adopt Me
+                      </button>
                     </div>
                   </div>
                 ))
@@ -224,12 +233,12 @@ const Adoption = () => {
         </div>
       </div>
       
-      {showAdoptionForm && (
+      {showAdoptionForm && selectedPet && (
         <AdoptionForm 
           pet={selectedPet}
           onClose={() => setShowAdoptionForm(false)}
           onSubmit={() => {
-            setCurrentPetIndex(prev => prev + 1);
+            setShowAdoptionForm(false);
             fetchPets();
           }}
         />
