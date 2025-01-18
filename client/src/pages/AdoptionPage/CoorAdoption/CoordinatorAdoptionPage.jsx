@@ -65,6 +65,7 @@ const CoordinatorAdoptionPage = () => {
         e.preventDefault();
         
         try {
+            // Validate photo first
             if (!formData.photo) {
                 alert('Please select a photo');
                 return;
@@ -72,39 +73,37 @@ const CoordinatorAdoptionPage = () => {
 
             const formDataToSend = new FormData();
             
-            // Log each field being added
-            console.log('Adding fields to FormData:');
-            
-            // Add each field to FormData
+            // Add all fields to FormData
             formDataToSend.append('name', formData.name);
-            console.log('Added name:', formData.name);
-            
             formDataToSend.append('age', formData.age);
-            console.log('Added age:', formData.age);
-            
             formDataToSend.append('breed', formData.breed);
-            console.log('Added breed:', formData.breed);
-            
             formDataToSend.append('vaccinated', formData.vaccinated);
-            console.log('Added vaccinated:', formData.vaccinated);
-            
             formDataToSend.append('description', formData.description);
-            console.log('Added description:', formData.description);
             
-            // Add the photo last
+            // Add photo last
             formDataToSend.append('photo', formData.photo);
-            console.log('Added photo:', formData.photo.name);
 
-            // Verify FormData contents
-            console.log('FormData contents:');
+            // Debug log
+            console.log('Submitting form with:', {
+                name: formData.name,
+                age: formData.age,
+                breed: formData.breed,
+                vaccinated: formData.vaccinated,
+                description: formData.description,
+                photoName: formData.photo.name
+            });
+
+            // Log FormData contents
             for (let pair of formDataToSend.entries()) {
-                console.log(pair[0], ':', pair[1] instanceof File ? pair[1].name : pair[1]);
+                console.log('FormData entry:', pair[0], ':', 
+                    pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]
+                );
             }
 
             const response = await addPet(formDataToSend);
-            console.log('Pet added successfully:', response);
+            console.log('Success:', response);
 
-            // Reset form
+            // Reset form on success
             setFormData({
                 name: '',
                 age: '',

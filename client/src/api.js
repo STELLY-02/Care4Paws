@@ -358,43 +358,35 @@ export const addPet = async (petData) => {
             throw new Error('No authentication token found');
         }
 
-        // Debug log
-        console.log('Adding pet with:', {
-            token: token ? 'Present' : 'Missing',
-            formDataKeys: Object.keys(petData)
+        // Debug log before sending
+        console.log('Sending pet data:', {
+            hasPhoto: petData.get('photo') !== null,
+            fields: Array.from(petData.entries()).map(([key, value]) => 
+                key === 'photo' ? `${key}: ${value.name}` : `${key}: ${value}`
+            )
         });
 
-        const formData = new FormData();
-        
-        // Log each field being added
-        Object.keys(petData).forEach(key => {
-            if (key === 'photo') {
-                if (petData[key]) {
-                    console.log('Adding photo:', petData[key].name);
-                    formData.append('photo', petData[key]);
-                } else {
-                    console.log('No photo provided');
-                }
-            } else {
-                console.log(`Adding ${key}:`, petData[key]);
-                formData.append(key, petData[key]);
+        const response = await axios.post(`${BASE_URL}/pets`, petData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                // Important: Don't set Content-Type here, let axios set it for FormData
+            },
+            withCredentials: true,
+            // Add timeout and validate status
+            timeout: 30000,
+            validateStatus: function (status) {
+                return status >= 200 && status < 500; // Don't reject if status is less than 500
             }
         });
 
-        // Log FormData contents
-        console.log('FormData entries:');
-        for (let pair of formData.entries()) {
-            console.log(pair[0], ':', pair[1] instanceof File ? pair[1].name : pair[1]);
+        // Check response status
+        if (response.status === 400) {
+            throw new Error(response.data.error || 'Bad request');
         }
 
-        const response = await axios.post(`${BASE_URL}/pets`, formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
-                // Don't set Content-Type, axios will set it with boundary for FormData
-            },
-            withCredentials: true
-        });
+        if (response.status !== 201) {
+            throw new Error('Failed to add pet');
+        }
 
         console.log('Server response:', response.data);
         return response.data;
@@ -406,6 +398,13 @@ export const addPet = async (petData) => {
             headers: error.response?.headers
         });
 
-        throw new Error(error.response?.data?.error || error.message || 'Failed to add pet');
+        // Throw specific error messages
+        if (error.response?.status === 400) {
+            throw new Error(error.response.data.error || 'Invalid pet data');
+        }
+        if (error.response?.status === 401) {
+            throw new Error('Please login again');
+        }
+        throw new Error(error.message || 'Failed to add pet');
     }
 };
