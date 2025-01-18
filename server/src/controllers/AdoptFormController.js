@@ -88,6 +88,62 @@ const submitAdoptForm = async (req, res) => {
     }
 };
 
+// Add new function to get adoption forms
+const getAdoptionForms = async (req, res) => {
+    try {
+        console.log('Fetching adoption forms for coordinator:', req.user._id);
+
+        // Find all adoption forms where coordinatorId matches the logged-in coordinator
+        const adoptionForms = await AdoptForm.find({ coordinatorId: req.user._id })
+            .populate('petId', 'name photo') // Get pet details
+            .populate('userId', 'username email') // Get user details
+            .sort({ createdAt: -1 }); // Most recent first
+
+        console.log(`Found ${adoptionForms.length} adoption forms`);
+        
+        res.json(adoptionForms);
+    } catch (error) {
+        console.error('Error getting adoption forms:', error);
+        res.status(500).json({ error: 'Error retrieving adoption forms' });
+    }
+};
+
+const updateAdoptionStatus = async (req, res) => {
+    try {
+        const { requestId } = req.params;
+        const { status } = req.body;
+
+        if (!['approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ error: 'Invalid status' });
+        }
+
+        const adoptForm = await AdoptForm.findById(requestId);
+        if (!adoptForm) {
+            return res.status(404).json({ error: 'Adoption request not found' });
+        }
+
+        // Update adoption form status
+        adoptForm.status = status;
+        await adoptForm.save();
+
+        // If approved, update pet status
+        if (status === 'approved') {
+            const pet = await Pet.findById(adoptForm.petId);
+            if (pet) {
+                pet.status = 'adopted';
+                await pet.save();
+            }
+        }
+
+        res.json({ message: 'Status updated successfully', adoptForm });
+    } catch (error) {
+        console.error('Error updating adoption status:', error);
+        res.status(500).json({ error: 'Error updating status' });
+    }
+};
+
 module.exports = {
-    submitAdoptForm
+    submitAdoptForm,
+    getAdoptionForms,
+    updateAdoptionStatus
 };

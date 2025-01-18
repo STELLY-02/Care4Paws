@@ -4,6 +4,7 @@ import { SidebarData } from "../../../components/SidebarData";
 import Navbar from "../../../components/Navbar";
 import './CoordinatorAdoption.css';
 import { addPet } from '../../../api';  // Import the addPet function
+import axios from 'axios';
 
 const CoordinatorAdoptionPage = () => {
     const token = localStorage.getItem('token');
@@ -23,6 +24,9 @@ const CoordinatorAdoptionPage = () => {
         photo: null
     });
     const [previewUrl, setPreviewUrl] = useState(null);
+    const [adoptionRequests, setAdoptionRequests] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -118,6 +122,110 @@ const CoordinatorAdoptionPage = () => {
             console.error('Error adding pet:', error);
             alert(error.message || 'Failed to add pet');
         }
+    };
+
+    useEffect(() => {
+        const fetchAdoptionRequests = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const token = localStorage.getItem('token');
+                
+                console.log('Fetching adoption requests...');
+                const response = await axios.get('http://localhost:5003/api/adopt', {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                console.log('Received adoption requests:', response.data);
+                setAdoptionRequests(response.data);
+            } catch (error) {
+                console.error('Error fetching adoption requests:', error);
+                setError('Failed to load adoption requests');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (activeTab === 'requests') {
+            fetchAdoptionRequests();
+        }
+    }, [activeTab]);
+
+    const handleStatusUpdate = async (requestId, newStatus) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.patch(
+                `http://localhost:5003/api/adopt/${requestId}/status`,
+                { status: newStatus },
+                {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            // Update local state to reflect the change
+            setAdoptionRequests(prev => 
+                prev.map(request => 
+                    request._id === requestId 
+                        ? { ...request, status: newStatus }
+                        : request
+                )
+            );
+
+            alert(`Adoption request ${newStatus}`);
+        } catch (error) {
+            console.error('Error updating status:', error);
+            alert('Failed to update adoption status');
+        }
+    };
+
+    const renderAdoptRequests = () => {
+        if (loading) return <div>Loading adoption requests...</div>;
+        if (error) return <div className="error-message">{error}</div>;
+        if (!adoptionRequests.length) return <div>No adoption requests found.</div>;
+
+        return (
+            <div className="adopt-requests-section">
+                <h2>Adoption Requests</h2>
+                <div className="adopt-requests-grid">
+                    {adoptionRequests.map((request) => (
+                        <div key={request._id} className="adopt-request-card">
+                            <div className="request-content">
+                                <h3>{request.firstName} {request.lastName}</h3>
+                                <p className="occupation">{request.occupation}</p>
+                                <p className="pet-name">
+                                    For: <strong>{request.petId?.name || 'Unknown Pet'}</strong>
+                                </p>
+                                <div className="status-section">
+                                    {/* <span className={`status-badge ${request.status}`}>
+                                        {request.status}
+                                    </span> */}
+                                    {request.status === 'pending' && (
+                                        <div className="action-buttons">
+                                            <button 
+                                                className="accept-btn"
+                                                onClick={() => handleStatusUpdate(request._id, 'approved')}
+                                            >
+                                                Accept
+                                            </button>
+                                            <button 
+                                                className="reject-btn"
+                                                onClick={() => handleStatusUpdate(request._id, 'rejected')}
+                                            >
+                                                Reject
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
     };
 
     try {
@@ -254,9 +362,7 @@ const CoordinatorAdoptionPage = () => {
                                 )}
 
                                 {activeTab === 'requests' && (
-                                    <div className="adopt-requests">
-                                        <h2>Adoption Requests</h2>
-                                    </div>
+                                    renderAdoptRequests()
                                 )}
                             </div>
                         </div>

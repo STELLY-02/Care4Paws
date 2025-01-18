@@ -2,37 +2,25 @@ const express = require('express');
 const router = express.Router();
 const { auth } = require('../middlewares/AdoptFormMiddleware');
 const { validateAdoptForm } = require('../middlewares/AdoptFormMiddleware');
-const { submitAdoptForm } = require('../controllers/AdoptFormController');
-
-// Debug to check if all middlewares are defined
-console.log('Middlewares loaded:', {
-    auth: !!auth,
-    validateAdoptForm: !!validateAdoptForm,
-    submitAdoptForm: !!submitAdoptForm
-});
+const { submitAdoptForm, getAdoptionForms, updateAdoptionStatus } = require('../controllers/AdoptFormController');
 
 // Debug logging
 router.use((req, res, next) => {
     console.log('Adopt form route hit:', {
         method: req.method,
         path: req.path,
-        params: req.params,
-        body: req.body
+        params: req.params
     });
     next();
 });
 
-// Make sure all middleware functions exist before using them
-if (!auth || !validateAdoptForm || !submitAdoptForm) {
-    console.error('Missing middleware functions:', {
-        auth: !auth,
-        validateAdoptForm: !validateAdoptForm,
-        submitAdoptForm: !submitAdoptForm
-    });
-    throw new Error('Required middleware functions are not properly loaded');
-}
+// Get all adoption forms for a coordinator
+router.get('/', auth, getAdoptionForms);
 
 // Submit adoption form route
 router.post('/:petId/submit', auth, validateAdoptForm, submitAdoptForm);
+
+// Add status update route
+router.patch('/:requestId/status', auth, updateAdoptionStatus);
 
 module.exports = router;
