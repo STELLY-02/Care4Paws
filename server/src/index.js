@@ -10,6 +10,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const communityPostRoutes = require("./routes/communityPostRoutes");
 const routeUpload = require('./routes/routeUpload');
+const { generateStreamToken } = require('./middlewares/generateStreamToken');
 
 
 dbConnect();
@@ -49,9 +50,10 @@ app.use("/api/uploadPic", routeUpload); //handling upload image
 app.get('/',(req,res)=>{
     res.send('Welcome to Care4Paws')
 })
+app.post('/api/stream-token', generateStreamToken);
 
 //Start the server
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8085;
 app.listen(PORT, ()=> {
     console.log(`Server is running at port ${PORT}`);
 })

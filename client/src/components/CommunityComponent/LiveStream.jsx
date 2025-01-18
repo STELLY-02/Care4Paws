@@ -13,10 +13,10 @@ function LiveStream() {
         Select an option to start your livestream experience.
       </Typography>
       <Stack direction="row" spacing={2}>
-        <Link to="/community/livestream/hosts">
+        <Link to="hosts">
           <Button className='livestream-button'>For Hosts</Button>
         </Link>
-        <Link to="/community/livestream/viewers">
+        <Link to="viewers">
           <Button className='livestream-button'>For Viewers</Button>
         </Link>
       </Stack>

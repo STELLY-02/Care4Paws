@@ -8,6 +8,7 @@ export const loginUser = async (credentials) => {
     try {
         //axios.post needs URL and data (an object)
         const { data } = await axios.post(`${BASE_URL}/auth/login`, credentials);
+        console.log("here is", data);
         return data; // { token, role }
     } catch (error) {
         console.error("Login failed:", error.response?.data || error.message);

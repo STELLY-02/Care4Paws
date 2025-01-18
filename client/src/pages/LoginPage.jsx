@@ -14,16 +14,18 @@ function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { token, role, userId } = await loginUser(formData);
+            const { token, role, userId, username } = await loginUser(formData);
             localStorage.setItem('token', token); // Save token
             localStorage.setItem('role', role);   // Save role 
             localStorage.setItem('userId',userId);
+            localStorage.setItem('user', JSON.stringify({ id: userId, name: username }));
             //alert('Login successful! Redirecting...');
             // Redirect based on role
             if (role === 'admin') navigate('/admin');
             else if (role === 'coordinator') navigate('/coordinator');
             else navigate('/user');
         } catch (err) {
+            console.log(err);
             setError(err.response?.data?.message || 'Login failed');
         }
     };

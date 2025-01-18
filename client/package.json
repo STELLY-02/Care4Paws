@@ -17,6 +17,7 @@
     "agora-rtc-sdk-ng": "^4.23.0",
     "axios": "^1.7.9",
     "client": "file:",
+    "hls.js": "^1.5.19",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -35,6 +36,7 @@
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.13.0",
     "react-router-dom": "^7.1.0",
+    "sass-embedded": "^1.83.4",
     "vite": "^6.0.3"
   }
 }

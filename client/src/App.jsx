@@ -14,6 +14,8 @@ import CoordinatorCommunityPage from './pages/CommunityPage/CoordinatorCommunity
 import UserProfile from './pages/CommunityPage/UserProfile';
 import Landing from './pages/Landing';
 import LiveStreamRouting from './components/CommunityComponent/LiveStreamRouting';
+import { HLSLivestreamUI } from './components/CommunityComponent/viewers/HLSLivestream';
+import { WebRTCLivestream } from './components/CommunityComponent/viewers/WebRTCLivestream';
 
 function App() {
     return (
@@ -41,8 +43,13 @@ function App() {
                         <ProtectedRoute allowedRoles={['coordinator']}>
                             <Routes>
                                 <Route path="" element={<CoordinatorDashboard />} />
-                                <Route path="/community" element={<CoordinatorCommunityPage />} />
-                                <Route path="/livestream/*" element={<LiveStreamRouting />} />
+                                <Route path="/community/*" element={<CoordinatorCommunityPage />} />
+                                <Route path="/community/livestream/*" element={<LiveStreamRouting />}>
+                                <Route path="viewers">
+                                    <Route path="hls/:callId" element={<HLSLivestreamUI />} />
+                                    <Route path="webrtc/:callId" element={<WebRTCLivestream />} />
+                                </Route>
+                                </Route>
                             </Routes>
                         </ProtectedRoute>
                     }
