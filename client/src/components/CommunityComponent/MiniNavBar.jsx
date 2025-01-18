@@ -12,12 +12,14 @@ function MiniNavBar({ activeTab, setActiveTab }) {
       { id: "myFeed", text: "My Feed" },
       { id: "exploreCommunity", text: "Explore Community" },
       { id: "event", text: "Event" },
+      { id: "livestream", text: "Livestream Now" },
     );
   }
     else if (role === "coordinator"){
       feedTabs.push(
         { id: "myPage", text: "My Page" },
         { id: "myEvent", text: "My Event" },
+        { id: "myLivestream", text: "My Livestream" },
       );
     }
     

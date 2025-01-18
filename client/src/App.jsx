@@ -13,6 +13,7 @@ import UserCommunityPage from './pages/CommunityPage/UserCommunity/UserCommunity
 import CoordinatorCommunityPage from './pages/CommunityPage/CoordinatorCommunity/CoordinatorCommunityPage';
 import UserProfile from './pages/CommunityPage/UserProfile';
 import Landing from './pages/Landing';
+import LiveStreamRouting from './components/CommunityComponent/LiveStreamRouting';
 
 function App() {
     return (
@@ -41,6 +42,7 @@ function App() {
                             <Routes>
                                 <Route path="" element={<CoordinatorDashboard />} />
                                 <Route path="/community" element={<CoordinatorCommunityPage />} />
+                                <Route path="/livestream/*" element={<LiveStreamRouting />} />
                             </Routes>
                         </ProtectedRoute>
                     }

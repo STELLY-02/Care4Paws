@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './CoordinatorFeed.css';
-import {
-  LivestreamPlayer,
-  StreamVideo,
-  StreamVideoClient,
-  StreamCall,
-  useCallStateHooks, 
-  ParticipantView,
-  useCall,
-  StreamTheme
-} from "@stream-io/video-react-sdk";
-import "@stream-io/video-react-sdk/dist/css/styles.css";
+// import {
+//   LivestreamPlayer,
+//   StreamVideo,
+//   StreamVideoClient,
+//   StreamCall,
+//   useCallStateHooks, 
+//   ParticipantView,
+//   useCall,
+//   StreamTheme
+// } from "@stream-io/video-react-sdk";
+// import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { createPost, createCampaigns, fetchUserAndFollowedPosts } from '../../api';
 import Logo from '../../assets/Logo-fit.png';
 import PostCreationModal from './PostCreationModal';
@@ -24,49 +24,49 @@ import axios from 'axios';
 //hello
 
 
-const apiKey = "qy27ve6mpk4e"; 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJAc3RyZWFtLWlvL2Rhc2hib2FyZCIsImlhdCI6MTczNjI0NTE5MywiZXhwIjoxNzM2MzMxNTkzLCJ1c2VyX2lkIjoiIWFub24iLCJyb2xlIjoidmlld2VyIiwiY2FsbF9jaWRzIjpbImxpdmVzdHJlYW06bGl2ZXN0cmVhbF8yYTU2OWY4Zi1hMjZjLTRlNWMtYjBjZC03NzNjMzUwZWJlODciXX0.EUhnkoexEQwdv-IpFy7m2MJFjrr01N5qjpirr6sk32k"; 
-const callId = "livestream_2a569f8f-a26c-4e5c-b0cd-773c350ebe87"; 
+// const apiKey = "qy27ve6mpk4e"; 
+// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJAc3RyZWFtLWlvL2Rhc2hib2FyZCIsImlhdCI6MTczNjI0NTE5MywiZXhwIjoxNzM2MzMxNTkzLCJ1c2VyX2lkIjoiIWFub24iLCJyb2xlIjoidmlld2VyIiwiY2FsbF9jaWRzIjpbImxpdmVzdHJlYW06bGl2ZXN0cmVhbF8yYTU2OWY4Zi1hMjZjLTRlNWMtYjBjZC03NzNjMzUwZWJlODciXX0.EUhnkoexEQwdv-IpFy7m2MJFjrr01N5qjpirr6sk32k"; 
+// const callId = "livestream_2a569f8f-a26c-4e5c-b0cd-773c350ebe87"; 
 
-const userId = localStorage.getItem("userId");
+// const userId = localStorage.getItem("userId");
 
-const user = { id: userId };
-const client = new StreamVideoClient({ apiKey, user, token });
-const call = client.call('livestream', callId);
+// const user = { id: userId };
+// const client = new StreamVideoClient({ apiKey, user, token });
+// const call = client.call('livestream', callId);
 
-const MyLivestreamUI = () => {
-  const { useIsCallLive, useLocalParticipant, useParticipantCount } = useCallStateHooks();
-  const totalParticipants = useParticipantCount();
-  const localParticipant = useLocalParticipant();
-  const isCallLive = useIsCallLive();
-  const call = useCall();
+// const MyLivestreamUI = () => {
+//   const { useIsCallLive, useLocalParticipant, useParticipantCount } = useCallStateHooks();
+//   const totalParticipants = useParticipantCount();
+//   const localParticipant = useLocalParticipant();
+//   const isCallLive = useIsCallLive();
+//   const call = useCall();
 
-  return (
-    <div className='big-div'>
-      <div className='participants-box'>
-        Live: {totalParticipants}
-      </div>
-      <div className='video-box'>
-        {localParticipant && (
-          <ParticipantView 
-            participant={localParticipant}
-            ParticipantViewUI={null}
-          />
-        )}
-      </div>
-      <div className='go-live'>
-        {isCallLive ? (
-          <button onClick={() => call?.stopLive()}>Stop Live</button>
-        ) : (
-          <button onClick={() => call?.startLive()}>Start Live</button>
-        )}
-      </div>
-      <div id="live-stream">
-        <LivestreamPlayer callType="livestream" callId={callId} />
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className='big-div'>
+//       <div className='participants-box'>
+//         Live: {totalParticipants}
+//       </div>
+//       <div className='video-box'>
+//         {localParticipant && (
+//           <ParticipantView 
+//             participant={localParticipant}
+//             ParticipantViewUI={null}
+//           />
+//         )}
+//       </div>
+//       <div className='go-live'>
+//         {isCallLive ? (
+//           <button onClick={() => call?.stopLive()}>Stop Live</button>
+//         ) : (
+//           <button onClick={() => call?.startLive()}>Start Live</button>
+//         )}
+//       </div>
+//       <div id="live-stream">
+//         <LivestreamPlayer callType="livestream" callId={callId} />
+//       </div>
+//     </div>
+//   );
+// };
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
@@ -254,23 +254,23 @@ function CoordinatorFeed() {
         };
 
   //live
-  const [isLive, setIsLive] = useState(false);
-  const handleLiveButtonClick = () => {
-    setIsLive(true);
-    call.join({ create: true }).catch((e) => {
-      console.error("Failed to join call", e);
-    });
-    // Notify followers about the live streaming
-    // This can be done via an API call to notify followers
-  };
+  // const [isLive, setIsLive] = useState(false);
+  // const handleLiveButtonClick = () => {
+  //   setIsLive(true);
+  //   call.join({ create: true }).catch((e) => {
+  //     console.error("Failed to join call", e);
+  //   });
+  //   // Notify followers about the live streaming
+  //   // This can be done via an API call to notify followers
+  // };
 
-  useEffect(() => {
-    return () => {
-      call.leave().catch((e) => {
-        console.error("Failed to leave call", e);
-      });
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     call.leave().catch((e) => {
+  //       console.error("Failed to leave call", e);
+  //     });
+  //   };
+  // }, []);
 
   return (
     <div>
@@ -285,7 +285,7 @@ function CoordinatorFeed() {
         </div>
         <div className="coordinator-functions">
           <div className="functionbox">
-          <FaPeopleGroup 
+          {/* <FaPeopleGroup 
             size={40}
             color="493628"/>
             <p>Feeling like connect with your community? Go live now!</p>
@@ -298,7 +298,7 @@ function CoordinatorFeed() {
               </StreamVideo>
               )}
           </div>
-          <div className="functionbox">
+          <div className="functionbox"> */}
           <MdCampaign 
             size={45}
             color="493628"/>

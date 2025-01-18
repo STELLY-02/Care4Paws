@@ -14,6 +14,7 @@ import CoordinatorEvent from './CoordinatorEvent';
 import "./CoordinatorCommunityPage.css";
 import CoordinatorFeed from "../../../components/CommunityComponent/CoordinatorFeed";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
+import LiveStreamRouting from "../../../components/CommunityComponent/LiveStreamRouting"
 
 function CoordinatorCommunityPage() {
 const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -21,7 +22,7 @@ const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 const sidebarData = SidebarData("coordinator");
 
 const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
+    setIsSidebarOpen((prev) => !prev); 
 };
 
 //state to track which tab is active
@@ -33,6 +34,8 @@ const renderTabContent = () => {
       return <CoordinatorFeed />
     case "myEvent":
       return <CoordinatorEvent />;
+    case "myLivestream":
+      return <LiveStreamRouting />;
     default:
       return <div>Tab not found</div>;
   }
