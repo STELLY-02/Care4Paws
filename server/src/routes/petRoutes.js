@@ -5,6 +5,7 @@ const petAuth = require('../middlewares/petAuth');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const Pet = require('../models/Pets');
 
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, '..', 'uploads');
@@ -67,6 +68,28 @@ router.post('/', petAuth, (req, res, next) => {
         next();
     });
 }, addPet);
+
+// Delete pet - only for coordinators
+router.delete('/:id', petAuth, async (req, res) => {
+    try {
+        const petId = req.params.id;
+        
+        // Check if pet exists
+        const pet = await Pet.findById(petId);
+        if (!pet) {
+            return res.status(404).json({ message: 'Pet not found' });
+        }
+
+        // Delete the pet
+        await Pet.findByIdAndDelete(petId);
+        
+        // Send success response
+        res.json({ message: 'Pet deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting pet:', error);
+        res.status(500).json({ message: 'Error deleting pet' });
+    }
+});
 
 // Error handling middleware
 router.use((err, req, res, next) => {

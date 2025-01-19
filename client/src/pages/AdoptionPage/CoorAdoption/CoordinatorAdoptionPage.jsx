@@ -206,18 +206,25 @@ const CoordinatorAdoptionPage = () => {
     };
 
     const handleDelete = async (petId) => {
-        if (window.confirm('Are you sure you want to delete this pet?')) {
+        if (window.confirm('Are you sure you want to delete this pet? This action cannot be undone.')) {
             try {
                 const token = localStorage.getItem('token');
+                
+                // Send delete request to backend
                 await axios.delete(`http://localhost:5003/api/pets/${petId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                setPets(pets.filter(pet => pet._id !== petId));
+
+                // Remove pet from local state
+                setPets(prevPets => prevPets.filter(pet => pet._id !== petId));
+                
+                // Show success message
+                alert('Pet deleted successfully');
             } catch (error) {
                 console.error('Error deleting pet:', error);
-                alert('Failed to delete pet');
+                alert('Failed to delete pet. Please try again.');
             }
         }
     };
@@ -414,9 +421,6 @@ const CoordinatorAdoptionPage = () => {
                                                                     objectFit: 'cover',
                                                                     borderRadius: '8px 8px 0 0'
                                                                 }}
-                                                                onError={(e) => {
-                                                                    console.error('Image failed to load:', pet.photo);
-                                                                }}
                                                             />
                                                         </div>
                                                         <div className="pet-info">
@@ -426,6 +430,12 @@ const CoordinatorAdoptionPage = () => {
                                                             <p><strong>Age:</strong> {pet.age} years</p>
                                                             <p><strong>Gender:</strong> {pet.gender}</p>
                                                             <p><strong>Vaccinated:</strong> {pet.vaccinated ? 'Yes' : 'No'}</p>
+                                                            <p>
+                                                                <strong>Status: </strong>
+                                                                <span className={`status-badge ${pet.status.toLowerCase()}`}>
+                                                                    {pet.status}
+                                                                </span>
+                                                            </p>
                                                             <p className="description"><strong>Description:</strong> {pet.description}</p>
                                                             <div className="action-buttons">
                                                                 <button 
