@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import "./Landing.css";
 import LandingPhoto from '../assets/LandingPhoto.png'; // Import the image
 import About_Us from "../components/LandingComponent/About_Us/About_Us";
@@ -8,6 +9,12 @@ import JoinUs from "../components/LandingComponent/JoinUs/JoinUs";
 import ContactUs from "../components/LandingComponent/ContactUs/ContactUs";
 
 const Landing = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleLoginClick = () => {
+    navigate('/login'); // Navigate to login page
+  };
+
   return (
     <div>
       <div 
@@ -36,7 +43,7 @@ const Landing = () => {
                 <a href="#contact">Contact Us</a>
               </li>
             </ul>
-            <button className="login-button">Login</button>
+            <button className="login-button" onClick={handleLoginClick}>Login</button>
           </nav>
         </header>
         <div className="hero-content">

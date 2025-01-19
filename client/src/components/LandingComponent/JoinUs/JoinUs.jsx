@@ -1,7 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './JoinUs.css';
 
 const JoinUs = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleJoinClick = () => {
+    navigate('/login'); // Navigate to login page
+  };
+
   return (
     <div className="joinus-page">
       <h1 className="joinus-title">Join Our Pet-Loving Community!</h1>
@@ -18,7 +25,7 @@ const JoinUs = () => {
         </ul>
       </p>
       <div className="JoinUs_buttons">
-        <button>Join As Member</button>
+        <button onClick={handleJoinClick}>Join As Member</button>
       </div>
       <div className="photo-container">
       </div>
