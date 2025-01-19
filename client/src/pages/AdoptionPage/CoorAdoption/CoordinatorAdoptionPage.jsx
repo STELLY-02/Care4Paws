@@ -565,7 +565,6 @@ const CoordinatorAdoptionPage = () => {
                                                         </div>
                                                         <div className="pet-info">
                                                             <h3>{pet.name}</h3>
-                                                            <p><strong>Type:</strong> {pet.type}</p>
                                                             <p><strong>Breed:</strong> {pet.breed}</p>
                                                             <p><strong>Age:</strong> {pet.age} years</p>
                                                             <p><strong>Gender:</strong> {pet.gender}</p>
