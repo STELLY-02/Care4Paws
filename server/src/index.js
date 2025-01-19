@@ -27,10 +27,10 @@ const app = express();
 //Middleware
 app.use(express.json()); //enable parsing of json
 
-// Update CORS configuration
+// Updated CORS configuration
 app.use(cors({
     origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));

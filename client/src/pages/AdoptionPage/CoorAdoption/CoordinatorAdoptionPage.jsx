@@ -28,6 +28,8 @@ const CoordinatorAdoptionPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [pets, setPets] = useState([]);
+    const [editingPet, setEditingPet] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -227,6 +229,150 @@ const CoordinatorAdoptionPage = () => {
                 alert('Failed to delete pet. Please try again.');
             }
         }
+    };
+
+    const handleEdit = (pet) => {
+        setEditingPet(pet);
+        setShowEditModal(true);
+    };
+
+    const handleUpdate = async (updatedPetData) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.put(
+                `http://localhost:5003/api/pets/${editingPet._id}`,
+                updatedPetData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            // Update the pets list with the updated pet
+            setPets(prevPets => 
+                prevPets.map(pet => 
+                    pet._id === editingPet._id ? response.data : pet
+                )
+            );
+
+            setShowEditModal(false);
+            setEditingPet(null);
+            alert('Pet updated successfully');
+        } catch (error) {
+            console.error('Error updating pet:', error);
+            alert('Failed to update pet. Please try again.');
+        }
+    };
+
+    const EditPetModal = ({ pet, onClose, onUpdate }) => {
+        const [formData, setFormData] = useState({
+            name: pet.name,
+            type: pet.type,
+            breed: pet.breed,
+            age: pet.age,
+            gender: pet.gender,
+            vaccinated: pet.vaccinated,
+            description: pet.description,
+            status: pet.status
+        });
+
+        const handleChange = (e) => {
+            const { name, value, type, checked } = e.target;
+            setFormData(prev => ({
+                ...prev,
+                [name]: type === 'checkbox' ? checked : value
+            }));
+        };
+
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            onUpdate(formData);
+        };
+
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h2>Edit Pet</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>Name:</label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Type:</label>
+                            <input
+                                type="text"
+                                name="type"
+                                value={formData.type}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Breed:</label>
+                            <input
+                                type="text"
+                                name="breed"
+                                value={formData.breed}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Age:</label>
+                            <input
+                                type="number"
+                                name="age"
+                                value={formData.age}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Gender:</label>
+                            <select name="gender" value={formData.gender} onChange={handleChange}>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="vaccinated"
+                                    checked={formData.vaccinated}
+                                    onChange={handleChange}
+                                />
+                                Vaccinated
+                            </label>
+                        </div>
+                        <div className="form-group">
+                            <label>Status:</label>
+                            <select name="status" value={formData.status} onChange={handleChange}>
+                                <option value="available">Available</option>
+                                <option value="adopted">Adopted</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Description:</label>
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="modal-buttons">
+                            <button type="submit" className="accept-btn">Save Changes</button>
+                            <button type="button" className="reject-btn" onClick={onClose}>Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        );
     };
 
     const renderAdoptRequests = () => {
@@ -440,7 +586,7 @@ const CoordinatorAdoptionPage = () => {
                                                             <div className="action-buttons">
                                                                 <button 
                                                                     className="accept-btn"
-                                                                    onClick={() => alert('Edit functionality coming soon!')}
+                                                                    onClick={() => handleEdit(pet)}
                                                                 >
                                                                     Edit
                                                                 </button>
@@ -466,6 +612,16 @@ const CoordinatorAdoptionPage = () => {
                         </div>
                     </div>
                 </div>
+                {showEditModal && editingPet && (
+                    <EditPetModal
+                        pet={editingPet}
+                        onClose={() => {
+                            setShowEditModal(false);
+                            setEditingPet(null);
+                        }}
+                        onUpdate={handleUpdate}
+                    />
+                )}
             </div>
         );
     } catch (error) {

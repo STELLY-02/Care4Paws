@@ -6,6 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const Pet = require('../models/Pets');
+const verifyToken = require('../middlewares/authMiddleware');
 
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, '..', 'uploads');
@@ -88,6 +89,32 @@ router.delete('/:id', petAuth, async (req, res) => {
     } catch (error) {
         console.error('Error deleting pet:', error);
         res.status(500).json({ message: 'Error deleting pet' });
+    }
+});
+
+// Update pet - only for coordinators
+router.put('/:id', verifyToken, async (req, res) => {
+    try {
+        const petId = req.params.id;
+        const updates = req.body;
+        
+        // Check if pet exists
+        const pet = await Pet.findById(petId);
+        if (!pet) {
+            return res.status(404).json({ message: 'Pet not found' });
+        }
+
+        // Update the pet
+        const updatedPet = await Pet.findByIdAndUpdate(
+            petId,
+            updates,
+            { new: true } // Returns the updated document
+        );
+        
+        res.json(updatedPet);
+    } catch (error) {
+        console.error('Error updating pet:', error);
+        res.status(500).json({ message: 'Error updating pet' });
     }
 });
 
