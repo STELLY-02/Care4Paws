@@ -11,7 +11,7 @@ import CrossIcon from "../../../assets/cross-icon.png";
 import HeartIcon from "../../../assets/love-icon.png";
 import AdoptionForm from './AdoptionForm';
 
-const Adoption = () => {
+const UserAdoptionPage = () => {
   const [currentTab, setCurrentTab] = useState("All Pets");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [animals, setAnimals] = useState([]);
@@ -26,14 +26,11 @@ const Adoption = () => {
     const fetchPets = async () => {
       try {
         const token = localStorage.getItem('token');
-        
         if (!token) {
           console.log('No token found, redirecting to login');
           navigate('/login');
           return;
         }
-
-        console.log('Fetching pets with token:', token.substring(0, 20) + '...');
 
         const response = await axios.get('http://localhost:5003/api/pets', {
           headers: {
@@ -43,8 +40,6 @@ const Adoption = () => {
           withCredentials: true
         });
 
-        console.log('Pets response:', response.data);
-        
         if (Array.isArray(response.data)) {
           setAnimals(response.data);
         } else {
@@ -71,26 +66,52 @@ const Adoption = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleLike = async (petId) => {
-    try {
-      setSelectedPet(animals[currentPetIndex]);
-      setShowAdoptionForm(true);
-    } catch (error) {
-      console.error('Error liking pet:', error);
-    }
+  const handlePass = () => {
+    setCurrentPetIndex((prevIndex) => {
+      if (prevIndex >= animals.length - 1) {
+        return 0;
+      }
+      return prevIndex + 1;
+    });
   };
 
-  const handlePass = () => {
-    setCurrentPetIndex(prev => prev + 1);
+  const handleLike = (pet) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login to adopt pets');
+      navigate('/login');
+      return;
+    }
+
+    if (pet.status !== 'available') {
+      alert('Sorry, this pet is currently not available for adoption.');
+      return;
+    }
+
+    setSelectedPet(pet);
+    setShowAdoptionForm(true);
+  };
+
+  const handleAdoptClick = (pet) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login first to adopt a pet');
+      navigate('/login');
+      return;
+    }
+
+    if (pet.status === 'pending' || pet.status === 'adopted') {
+      alert('Sorry, this pet is currently not available for adoption as it is under application process.');
+      return;
+    }
+
+    setSelectedPet(pet);
+    setShowAdoptionForm(true);
   };
 
   const renderSwipeMatch = () => {
     if (!Array.isArray(animals) || animals.length === 0) {
       return <div className="no-pets">No pets available for matching</div>;
-    }
-
-    if (currentPetIndex >= animals.length) {
-      return <div className="no-pets">No more pets to show!</div>;
     }
 
     const currentPet = animals[currentPetIndex];
@@ -123,8 +144,9 @@ const Adoption = () => {
               <img src={CrossIcon} alt="Pass" className="button-icon" />
             </button>
             <button 
-              className="like-button"
-              onClick={() => handleLike(currentPet._id)}
+              className={`like-button ${currentPet.status !== 'available' ? 'disabled' : ''}`}
+              onClick={() => handleLike(currentPet)}
+              disabled={currentPet.status !== 'available'}
               aria-label="Like"
             >
               <img src={HeartIcon} alt="Like" className="button-icon" />
@@ -214,13 +236,11 @@ const Adoption = () => {
                       <p><strong>Vaccinated:</strong> {animal.vaccinated ? 'Yes' : 'No'}</p>
                       <p><strong>Description:</strong> {animal.description}</p>
                       <button 
-                        className="adopt-button"
-                        onClick={() => {
-                          setSelectedPet(animal);
-                          setShowAdoptionForm(true);
-                        }}
+                        className={`adopt-button ${animal.status !== 'available' ? 'disabled' : ''}`}
+                        onClick={() => handleAdoptClick(animal)}
+                        disabled={animal.status !== 'available'}
                       >
-                        Adopt Me
+                        {animal.status === 'available' ? 'Adopt Me' : 'Not Available'}
                       </button>
                     </div>
                   </div>
@@ -236,10 +256,9 @@ const Adoption = () => {
       {showAdoptionForm && selectedPet && (
         <AdoptionForm 
           pet={selectedPet}
-          onClose={() => setShowAdoptionForm(false)}
-          onSubmit={() => {
+          onClose={() => {
             setShowAdoptionForm(false);
-            fetchPets();
+            setSelectedPet(null);
           }}
         />
       )}
@@ -247,4 +266,4 @@ const Adoption = () => {
   );
 };
 
-export default Adoption;
+export default UserAdoptionPage;

@@ -374,6 +374,15 @@
     background-color: #45a049;
 }
 
+.adopt-button.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.adopt-button.disabled:hover {
+    background-color: #cccccc;
+}
+
 .pet-box {
     /* ... existing styles ... */
     position: relative;
@@ -397,4 +406,14 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+}
+
+.like-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.like-button.disabled .button-icon {
+    filter: grayscale(100%);
 }

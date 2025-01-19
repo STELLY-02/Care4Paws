@@ -122,6 +122,33 @@ router.put('/:id', verifyToken, async (req, res) => {
     }
 });
 
+// Add this route to handle likes
+router.post('/:id/like', verifyToken, async (req, res) => {
+    try {
+        const petId = req.params.id;
+        const userId = req.user.id;
+
+        // Check if pet exists
+        const pet = await Pet.findById(petId);
+        if (!pet) {
+            return res.status(404).json({ message: 'Pet not found' });
+        }
+
+        // Check if pet is available
+        if (pet.status !== 'available') {
+            return res.status(400).json({ message: 'Pet is not available for adoption' });
+        }
+
+        // Add like logic here if needed
+        console.log(`User ${userId} liked pet ${petId}`);
+
+        res.json({ message: 'Pet liked successfully' });
+    } catch (error) {
+        console.error('Error liking pet:', error);
+        res.status(500).json({ message: 'Error processing like' });
+    }
+});
+
 // Error handling middleware
 router.use((err, req, res, next) => {
     console.error('Pet route error:', err);
