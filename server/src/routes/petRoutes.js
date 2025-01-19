@@ -98,6 +98,9 @@ router.put('/:id', verifyToken, async (req, res) => {
         const petId = req.params.id;
         const updates = req.body;
         
+        console.log('Received update request for pet:', petId);
+        console.log('Update data:', updates);
+
         // Check if pet exists
         const pet = await Pet.findById(petId);
         if (!pet) {
@@ -111,10 +114,11 @@ router.put('/:id', verifyToken, async (req, res) => {
             { new: true } // Returns the updated document
         );
         
+        console.log('Updated pet:', updatedPet);
         res.json(updatedPet);
     } catch (error) {
         console.error('Error updating pet:', error);
-        res.status(500).json({ message: 'Error updating pet' });
+        res.status(500).json({ message: 'Error updating pet', error: error.message });
     }
 });
 

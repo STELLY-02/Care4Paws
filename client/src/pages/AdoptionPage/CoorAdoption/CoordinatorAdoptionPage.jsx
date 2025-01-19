@@ -70,47 +70,35 @@ const CoordinatorAdoptionPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const formDataToSend = new FormData();
         
-        try {
-            // Validate photo first
-            if (!formData.photo) {
-                alert('Please select a photo');
-                return;
-            }
-
-            const formDataToSend = new FormData();
-            
-            // Add all fields to FormData
-            formDataToSend.append('name', formData.name);
-            formDataToSend.append('age', formData.age);
-            formDataToSend.append('breed', formData.breed);
-            formDataToSend.append('vaccinated', formData.vaccinated);
-            formDataToSend.append('description', formData.description);
-            
-            // Add photo last
+        // Append all form data
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('type', formData.type);
+        formDataToSend.append('breed', formData.breed);
+        formDataToSend.append('age', formData.age);
+        formDataToSend.append('gender', formData.gender);
+        formDataToSend.append('vaccinated', formData.vaccinated);
+        formDataToSend.append('description', formData.description);
+        if (formData.photo) {
             formDataToSend.append('photo', formData.photo);
+        }
 
-            // Debug log
-            console.log('Submitting form with:', {
-                name: formData.name,
-                age: formData.age,
-                breed: formData.breed,
-                vaccinated: formData.vaccinated,
-                description: formData.description,
-                photoName: formData.photo.name
-            });
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(
+                'http://localhost:5003/api/pets',  // Changed from /pets to /api/pets
+                formDataToSend,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
 
-            // Log FormData contents
-            for (let pair of formDataToSend.entries()) {
-                console.log('FormData entry:', pair[0], ':', 
-                    pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]
-                );
-            }
-
-            const response = await addPet(formDataToSend);
-            console.log('Success:', response);
-
-            // Reset form on success
+            console.log('Pet added successfully:', response.data);
+            alert('Pet added successfully!');
             setFormData({
                 name: '',
                 age: '',
@@ -120,10 +108,9 @@ const CoordinatorAdoptionPage = () => {
                 photo: null
             });
             setPreviewUrl(null);
-            alert('Pet added successfully!');
         } catch (error) {
-            console.error('Error adding pet:', error);
-            alert(error.message || 'Failed to add pet');
+            console.error('Add pet error details:', error);
+            alert('Failed to add pet. Please try again.');
         }
     };
 
@@ -239,15 +226,21 @@ const CoordinatorAdoptionPage = () => {
     const handleUpdate = async (updatedPetData) => {
         try {
             const token = localStorage.getItem('token');
+            console.log('Sending update for pet:', editingPet._id);
+            console.log('Update data:', updatedPetData);
+
             const response = await axios.put(
                 `http://localhost:5003/api/pets/${editingPet._id}`,
                 updatedPetData,
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 }
             );
+
+            console.log('Update response:', response.data);
 
             // Update the pets list with the updated pet
             setPets(prevPets => 
@@ -260,21 +253,21 @@ const CoordinatorAdoptionPage = () => {
             setEditingPet(null);
             alert('Pet updated successfully');
         } catch (error) {
-            console.error('Error updating pet:', error);
+            console.error('Error updating pet:', error.response?.data || error.message);
             alert('Failed to update pet. Please try again.');
         }
     };
 
     const EditPetModal = ({ pet, onClose, onUpdate }) => {
         const [formData, setFormData] = useState({
-            name: pet.name,
-            type: pet.type,
-            breed: pet.breed,
-            age: pet.age,
-            gender: pet.gender,
-            vaccinated: pet.vaccinated,
-            description: pet.description,
-            status: pet.status
+            name: pet.name || '',
+            type: pet.type || '',
+            breed: pet.breed || '',
+            age: pet.age || '',
+            gender: pet.gender || '',
+            vaccinated: pet.vaccinated || false,
+            description: pet.description || '',
+            status: pet.status || 'available'
         });
 
         const handleChange = (e) => {
@@ -287,6 +280,7 @@ const CoordinatorAdoptionPage = () => {
 
         const handleSubmit = (e) => {
             e.preventDefault();
+            console.log('Submitting form data:', formData);
             onUpdate(formData);
         };
 

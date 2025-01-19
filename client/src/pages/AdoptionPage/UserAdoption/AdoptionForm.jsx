@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import './AdoptionForm.css';
 
@@ -12,17 +12,6 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
     });
 
     const [errors, setErrors] = useState({});
-
-    useEffect(() => {
-        // Get user data from localStorage
-        const userData = JSON.parse(localStorage.getItem('userData'));
-        if (userData?.email) {
-            setFormData(prev => ({
-                ...prev,
-                email: userData.email
-            }));
-        }
-    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -77,17 +66,9 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
             const url = `http://localhost:5003/api/adopt/${pet._id}/submit`;
             console.log('Submitting adoption form to:', url);
 
-            const requestData = {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                contactNumber: formData.contactNumber,
-                occupation: formData.occupation
-            };
-
             const response = await axios.post(
                 url,
-                requestData,
+                formData,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -98,10 +79,7 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
 
             console.log('Adoption form submitted successfully:', response.data);
             
-            // Show success message to user
-            alert('Adoption form submitted successfully!');
-            
-            // Clear form and close
+            // Clear form
             setFormData({
                 firstName: '',
                 lastName: '',
@@ -109,32 +87,24 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
                 contactNumber: '',
                 occupation: ''
             });
-            
-            // Call onSubmit and onClose callbacks
-            onSubmit && onSubmit();
+
+            // Show success message and close form
+            alert('Adoption form submitted successfully!');
             onClose && onClose();
             
+            // No need to call onSubmit separately as it might trigger another request
+            
         } catch (error) {
+            console.error('Error details:', error);
             if (error.response) {
-                // Server responded with an error
-                console.error('Server error:', error.response.data);
                 alert(error.response.data.error || 'Failed to submit adoption form');
             } else if (error.request) {
-                // Request was made but no response
-                console.error('No response from server');
                 alert('No response from server. Please try again.');
             } else {
-                // Error in request setup
-                console.error('Request error:', error.message);
                 alert('Error submitting form. Please try again.');
             }
+            return; // Stop execution if there's an error
         }
-    };
-
-    const handleContactCoordinator = () => {
-        // You can implement the contact functionality here
-        // For now, let's just show an alert
-        alert('Contact coordinator functionality will be implemented soon!');
     };
 
     return (
@@ -177,9 +147,10 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
                             type="email"
                             name="email"
                             value={formData.email}
-                            readOnly
-                            className="readonly-field"
+                            onChange={handleChange}
+                            className={errors.email ? 'error' : ''}
                         />
+                        {errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
 
                     <div className="form-group">
@@ -209,13 +180,6 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
                     </div>
 
                     <div className="button-group">
-                        <button 
-                            type="button" 
-                            className="contact-button"
-                            onClick={handleContactCoordinator}
-                        >
-                            Contact Coordinator
-                        </button>
                         <button type="submit" className="submit-button">
                             Submit Application
                         </button>
