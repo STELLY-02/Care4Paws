@@ -3,39 +3,29 @@
 const jwt = require("jsonwebtoken");
 const User = require('../models/userModel');
 
-const verifyToken  = async (req, res, next) => {
-    let token;
-    let authHeader = req.headers.Authorization || req.headers.authorization;
-    console.log("Authorization header:", authHeader);
-
-    if (authHeader && authHeader.startsWith("Bearer")){
-        token = authHeader.split(" ")[1];
-
-        if(!token){
-            return res.status(401).json({message: "No token, authorization denied"});
+const verifyToken = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        
+        if (!token) {
+            return res.status(401).json({ error: 'No token provided' });
         }
 
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET); //verify token and secret key
-            console.log("Decoded token:", decoded);
-            // req.user = decoded;
-            const user = await User.findById(decoded.id); // Fetch the user by ID from the database
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('Decoded token:', decoded); // Debug log
+
+        // Get user from database
+        const user = await User.findById(decoded.id);
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(401).json({ error: 'User not found' });
         }
-        req.user = {
-            _id: user._id,
-            username: user.username,
-            role: user.role,
-        };
-        console.log(req.user);
+
+        req.user = user; // Attach full user object
         next();
-        } catch(err){
-            res.status(400).json({message: "Token is not validate"}); 
-        }
-    } else {
-        return res.status(401).json({message: "No token, authorization denied"});
+    } catch (error) {
+        console.error('Auth error:', error);
+        res.status(401).json({ error: 'Invalid token' });
     }
-}
+};
 
 module.exports = verifyToken;

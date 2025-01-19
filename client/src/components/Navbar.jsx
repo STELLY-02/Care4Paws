@@ -15,7 +15,9 @@ const Navbar = () => {
 
       <div className="navright">
         <div className="chatNoti">
-          <img src={NotificationIcon} alt="" className="notiicon" />
+          <Link to="/notification">
+            <img src={NotificationIcon} alt="" className="notiicon" />
+          </Link>
           <img src={Chaticon} alt="" className="chaticon" />
         </div>
         <div className="propic">

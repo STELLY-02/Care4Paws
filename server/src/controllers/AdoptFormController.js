@@ -1,5 +1,6 @@
 const AdoptForm = require('../models/AdoptFormModel');
 const Pet = require('../models/Pets');
+const Notification = require('../models/NotificationModel');
 
 const submitAdoptForm = async (req, res) => {
     try {
@@ -113,11 +114,10 @@ const updateAdoptionStatus = async (req, res) => {
         const { requestId } = req.params;
         const { status } = req.body;
 
-        if (!['approved', 'rejected'].includes(status)) {
-            return res.status(400).json({ error: 'Invalid status' });
-        }
+        const adoptForm = await AdoptForm.findById(requestId)
+            .populate('userId')  // Add this to get user details
+            .populate('petId');  // Add this to get pet details
 
-        const adoptForm = await AdoptForm.findById(requestId);
         if (!adoptForm) {
             return res.status(404).json({ error: 'Adoption request not found' });
         }
@@ -125,6 +125,19 @@ const updateAdoptionStatus = async (req, res) => {
         // Update adoption form status
         adoptForm.status = status;
         await adoptForm.save();
+
+        // Create notification for the user
+        const notification = new Notification({
+            userId: adoptForm.userId._id,  // User who submitted the form
+            title: `Adoption Request ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+            message: status === 'approved' 
+                ? `Congratulations! Your adoption request for ${adoptForm.petId.name} has been approved!`
+                : `Your adoption request for ${adoptForm.petId.name} has been rejected.`,
+            type: status === 'approved' ? 'success' : 'info'
+        });
+
+        await notification.save();
+        console.log('Created notification:', notification); // Debug log
 
         // If approved, update pet status
         if (status === 'approved') {
@@ -135,7 +148,11 @@ const updateAdoptionStatus = async (req, res) => {
             }
         }
 
-        res.json({ message: 'Status updated successfully', adoptForm });
+        res.json({ 
+            message: 'Status updated successfully', 
+            adoptForm,
+            notification 
+        });
     } catch (error) {
         console.error('Error updating adoption status:', error);
         res.status(500).json({ error: 'Error updating status' });

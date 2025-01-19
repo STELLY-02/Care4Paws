@@ -20,7 +20,7 @@ router.get('/', auth, getAdoptionForms);
 // Submit adoption form route
 router.post('/:petId/submit', auth, validateAdoptForm, submitAdoptForm);
 
-// Add status update route
+// Update adoption status route
 router.patch('/:requestId/status', auth, updateAdoptionStatus);
 
 module.exports = router;

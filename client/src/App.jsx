@@ -14,6 +14,8 @@ import CoordinatorCommunityPage from './pages/CommunityPage/CoordinatorCommunity
 import Landing from './pages/Landing';
 import CoordinatorAdoptionPage from './pages/AdoptionPage/CoorAdoption/CoordinatorAdoptionPage';
 import UserAdoptionPage from './pages/AdoptionPage/UserAdoption/UserAdoptionPage';
+import NotificationsPage from './pages/NotificationPage';
+import NotificationPage from "./pages/NotificationPage";
 
 function App() {
     return (
@@ -59,6 +61,8 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/notification" element={<NotificationPage />} />
             </Routes>
         </BrowserRouter>
     );

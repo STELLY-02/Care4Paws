@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { SidebarData } from "../../../components/SidebarData";
 import Navbar from "../../../components/Navbar";
 import './CoordinatorAdoption.css';
-import { addPet } from '../../../api';  // Import the addPet function
+import { addPet, updateAdoptionStatus, getAdoptionRequests } from '../../../api';  // Import the addPet function
 import axios from 'axios';
 
 const CoordinatorAdoptionPage = () => {
@@ -129,20 +129,11 @@ const CoordinatorAdoptionPage = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const token = localStorage.getItem('token');
-                
-                console.log('Fetching adoption requests...');
-                const response = await axios.get('http://localhost:5003/api/adopt', {
-                    headers: { 
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                
-                console.log('Received adoption requests:', response.data);
-                setAdoptionRequests(response.data);
+                const data = await getAdoptionRequests();
+                setAdoptionRequests(data);
             } catch (error) {
-                console.error('Error fetching adoption requests:', error);
-                setError('Failed to load adoption requests');
+                console.error('Error:', error);
+                setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -155,18 +146,16 @@ const CoordinatorAdoptionPage = () => {
 
     const handleStatusUpdate = async (requestId, newStatus) => {
         try {
-            const token = localStorage.getItem('token');
-            await axios.patch(
-                `http://localhost:5003/api/adopt/${requestId}/status`,
-                { status: newStatus },
-                {
-                    headers: { 
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
+            const confirmMessage = newStatus === 'approved' 
+                ? 'Are you sure you want to approve this adoption request?' 
+                : 'Are you sure you want to reject this adoption request?';
+                
+            if (!window.confirm(confirmMessage)) {
+                return;
+            }
 
-            // Update local state to reflect the change
+            const response = await updateAdoptionStatus(requestId, newStatus);
+
             setAdoptionRequests(prev => 
                 prev.map(request => 
                     request._id === requestId 
@@ -175,10 +164,15 @@ const CoordinatorAdoptionPage = () => {
                 )
             );
 
-            alert(`Adoption request ${newStatus}`);
+            const successMessage = newStatus === 'approved'
+                ? 'Adoption request has been approved! A notification has been sent to the user.'
+                : 'Adoption request has been rejected. A notification has been sent to the user.';
+            
+            alert(successMessage);
+
         } catch (error) {
-            console.error('Error updating status:', error);
-            alert('Failed to update adoption status');
+            console.error('Error:', error);
+            alert(error.message);
         }
     };
 
@@ -200,9 +194,9 @@ const CoordinatorAdoptionPage = () => {
                                     For: <strong>{request.petId?.name || 'Unknown Pet'}</strong>
                                 </p>
                                 <div className="status-section">
-                                    {/* <span className={`status-badge ${request.status}`}>
+                                    <span className={`status-badge ${request.status}`}>
                                         {request.status}
-                                    </span> */}
+                                    </span>
                                     {request.status === 'pending' && (
                                         <div className="action-buttons">
                                             <button 

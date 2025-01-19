@@ -207,6 +207,7 @@
     border-radius: 4px;
     font-size: 0.9em;
     font-weight: 500;
+    background-color: yellow;
 }
 
 .status-badge.approved {

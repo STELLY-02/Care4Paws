@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AdoptionForm.css';
 
@@ -12,6 +12,17 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
     });
 
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        if (userData?.email) {
+            setFormData(prev => ({
+                ...prev,
+                email: userData.email
+            }));
+        }
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -161,16 +172,14 @@ const AdoptionForm = ({ pet, onClose, onSubmit }) => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="email">Email</label>
+                        <label>Email:</label>
                         <input
                             type="email"
-                            id="email"
                             name="email"
                             value={formData.email}
-                            onChange={handleChange}
-                            className={errors.email ? 'error' : ''}
+                            readOnly
+                            className="readonly-field"
                         />
-                        {errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
 
                     <div className="form-group">

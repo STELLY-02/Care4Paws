@@ -2,14 +2,13 @@ const express = require("express");
 const dotenv = require("dotenv");
 const path = require('path');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // Load environment variables before any other code
 dotenv.config();
 
 // Verify environment variables are loaded
 console.log('MongoDB URI:', process.env.CONNECTION_STRING);
-
-const cors = require("cors");
 
 //database connection
 const dbConnect = require("./config/dbConnect");
@@ -30,8 +29,8 @@ app.use(express.json()); //enable parsing of json
 
 // Update CORS configuration
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Allow both localhost variations
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
@@ -52,7 +51,7 @@ app.use((req, res, next) => {
     console.log('Request:', {
         method: req.method,
         path: req.path,
-        body: req.body
+        headers: req.headers
     });
     next();
 });
@@ -64,9 +63,13 @@ app.use("/api/communityPost", communityPostRoutes); //handling community module
 app.use("/api/pets", petRoutes);
 app.use('/api/adopt', adoptFormRoutes);
 
-app.get('/',(req,res)=>{
-    res.send('Welcome to Care4Paws')
-})
+// Test root route
+app.get('/', (req, res) => {
+    res.json({ message: 'Server is running' });
+});
+
+//Mount user routes
+app.use('/api/user', userRoutes);
 
 //Error handling middleware
 app.use((err, req, res, next) => {
@@ -74,10 +77,21 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: err.message });
 });
 
+// 404 handler
+app.use((req, res) => {
+    console.log('404 for path:', req.path);
+    res.status(404).json({ 
+        error: 'Route not found',
+        path: req.path 
+    });
+});
+
 //Start the server
 const PORT = process.env.PORT || 5003;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 }).on('error', (err) => {
     console.error('Server failed to start:', err);
 });
+
+module.exports = app;
