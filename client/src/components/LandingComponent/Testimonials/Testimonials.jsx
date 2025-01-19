@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 import './Testimonials.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import YangYang from '../../../assets/YangYang.jpg';
 import GDragon from '../../../assets/GDragon.png';
@@ -41,7 +42,27 @@ const Testimonials = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />
   };
+
+  function NextArrow(props) {
+    const { onClick } = props;
+    return (
+      <button className="nav-button next-button" onClick={onClick}>
+        <FaChevronRight />
+      </button>
+    );
+  }
+
+  function PrevArrow(props) {
+    const { onClick } = props;
+    return (
+      <button className="nav-button prev-button" onClick={onClick}>
+        <FaChevronLeft />
+      </button>
+    );
+  }
 
   return (
     <div className="testimonials-page">
@@ -56,7 +77,6 @@ const Testimonials = () => {
         ))}
       </Slider>
     </div>
-
   );
 };
 

@@ -11,8 +11,23 @@
     padding-top: 50px;
   }
   
+  .landing-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+  }
+  
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
   .main-title {
-    color: 000000;
+    color: #000000;
     font-size: 3rem;
     margin-bottom: 10px;
     text-align: center;

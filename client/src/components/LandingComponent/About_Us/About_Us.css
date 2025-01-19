@@ -2,46 +2,82 @@
     background-color: #FFF0D1; 
     margin: 0;
     font-family: 'Abhaya Libre';
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
 }
 
 .common-container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 20px;
-    min-height: 500px;
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
+    padding: 40px 20px;
+    width: 100%;
 }
 
 .about-us-content {
     display: flex;
     align-items: center; 
-    justify-content: space-between; 
-    text-align: left; 
-    width: 100%;
+    justify-content: space-between;
+    gap: 200px;
 }
 
 .about-us-left {
     display: flex;
     flex-direction: column; 
-    align-items: flex-start; 
+    align-items: flex-start;
+    max-width: 600px;
+    margin-left: 50px;
 }
 
 .about-us-title {
     font-size: 2.5rem;
     color: #000000;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
+    text-align: left;
+    width: 100%;
 }
 
 .about-us-text {
     font-size: 1.5rem;
     color: #664343;
     line-height: 1.6;
+    text-align: left;
+    width: 100%;
+    margin-right: 700px;
 }
 
 .about-us-image {
-    width: 470px;
+    width: 400px;
+    height: 280px;
+    object-fit: cover;
     border-radius: 30px;
-    margin-left: 100px; 
+    margin-right: 50px;
+}
+
+@media (max-width: 1024px) {
+    .about-us-content {
+        flex-direction: column-reverse;
+        align-items: center;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .about-us-left {
+        align-items: center;
+        margin-left: 0;
+        max-width: 100%;
+    }
+
+    .about-us-title,
+    .about-us-text {
+        text-align: center;
+    }
+
+    .about-us-image {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        margin-right: 0;
+        margin-bottom: 30px;
+    }
 }

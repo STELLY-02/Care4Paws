@@ -7,14 +7,14 @@ const JoinUs = () => {
       <h1 className="joinus-title">Join Our Pet-Loving Community!</h1>
       <p className="joinus-paragraph">
         When we come together, we create a brighter future for animals. Be part of our community to:
-        <ul>
-          <li>Help reunite lost pets with their families.</li>
-          <li>Find the perfect pet to adopt and welcome into your home.</li>
-          <li>Connect with other pet lovers to share tips and experiences.</li>
-          <li>Join local events and activities that celebrate pets.</li>
-          <li>Earn rewards for your contributions to pet welfare initiatives.</li>
-          <li>Learn essential pet care tips and tricks.</li>
-          <li>Donate to make a meaningful impact.</li>
+        <ul className="joinus-list">
+          <li>1. Help reunite lost pets with their families.</li>
+          <li>2. Find the perfect pet to adopt and welcome into your home.</li>
+          <li>3. Connect with other pet lovers to share tips and experiences.</li>
+          <li>4. Join local events and activities that celebrate pets.</li>
+          <li>5. Earn rewards for your contributions to pet welfare initiatives.</li>
+          <li>6. Learn essential pet care tips and tricks.</li>
+          <li>7. Donate to make a meaningful impact.</li>
         </ul>
       </p>
       <div className="JoinUs_buttons">
