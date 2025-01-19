@@ -27,6 +27,7 @@ const CoordinatorAdoptionPage = () => {
     const [adoptionRequests, setAdoptionRequests] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [pets, setPets] = useState([]);
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -144,6 +145,34 @@ const CoordinatorAdoptionPage = () => {
         }
     }, [activeTab]);
 
+    useEffect(() => {
+        if (activeTab === 'manage') {
+            const fetchPets = async () => {
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        console.error('No token found');
+                        return;
+                    }
+
+                    const response = await axios.get('http://localhost:5003/api/pets', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    console.log('Pet data received:', response.data); // Debug log
+                    setPets(response.data);
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error fetching pets:', error);
+                    setLoading(false);
+                }
+            };
+
+            fetchPets();
+        }
+    }, [activeTab]);
+
     const handleStatusUpdate = async (requestId, newStatus) => {
         try {
             const confirmMessage = newStatus === 'approved' 
@@ -173,6 +202,23 @@ const CoordinatorAdoptionPage = () => {
         } catch (error) {
             console.error('Error:', error);
             alert(error.message);
+        }
+    };
+
+    const handleDelete = async (petId) => {
+        if (window.confirm('Are you sure you want to delete this pet?')) {
+            try {
+                const token = localStorage.getItem('token');
+                await axios.delete(`http://localhost:5003/api/pets/${petId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setPets(pets.filter(pet => pet._id !== petId));
+            } catch (error) {
+                console.error('Error deleting pet:', error);
+                alert('Failed to delete pet');
+            }
         }
     };
 
@@ -350,8 +396,56 @@ const CoordinatorAdoptionPage = () => {
                                 )}
 
                                 {activeTab === 'manage' && (
-                                    <div className="manage-pets">
-                                        <h2>Manage Pets</h2>
+                                    <div className="adopt-requests-grid">
+                                        {loading ? (
+                                            <div>Loading...</div>
+                                        ) : (
+                                            pets.map((pet) => {
+                                                console.log('Individual pet data:', pet); // Debug log
+                                                return (
+                                                    <div key={pet._id} className="pet-card">
+                                                        <div className="pet-image">
+                                                            <img 
+                                                                src={`http://localhost:5003${pet.photo}`}
+                                                                alt={pet.name}
+                                                                style={{ 
+                                                                    width: '100%', 
+                                                                    height: '200px', 
+                                                                    objectFit: 'cover',
+                                                                    borderRadius: '8px 8px 0 0'
+                                                                }}
+                                                                onError={(e) => {
+                                                                    console.error('Image failed to load:', pet.photo);
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="pet-info">
+                                                            <h3>{pet.name}</h3>
+                                                            <p><strong>Type:</strong> {pet.type}</p>
+                                                            <p><strong>Breed:</strong> {pet.breed}</p>
+                                                            <p><strong>Age:</strong> {pet.age} years</p>
+                                                            <p><strong>Gender:</strong> {pet.gender}</p>
+                                                            <p><strong>Vaccinated:</strong> {pet.vaccinated ? 'Yes' : 'No'}</p>
+                                                            <p className="description"><strong>Description:</strong> {pet.description}</p>
+                                                            <div className="action-buttons">
+                                                                <button 
+                                                                    className="accept-btn"
+                                                                    onClick={() => alert('Edit functionality coming soon!')}
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                                <button 
+                                                                    className="reject-btn"
+                                                                    onClick={() => handleDelete(pet._id)}
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        )}
                                     </div>
                                 )}
 
