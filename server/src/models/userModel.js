@@ -43,17 +43,41 @@ const userSchema = new mongoose.Schema(
             type: String,
             //required: true,
         },
-        following: [
-            {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: 'User',
-            }
-          ],
-          default: []
-    },
-    {
-        timestamps: true,
-    }
+        following: {
+            type: [
+              {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+              },
+            ],
+            default: [], // Correctly placed default for following
+          },
+          adoptedPets: {
+            type: [
+              {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Pet",
+              },
+            ],
+            default: [], // Correctly placed default for adoptedPets
+          },
+        },
+        {
+          timestamps: true,
+        }
 );
 
-module.exports = mongoose.model("User", userSchema);
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
+});
+
+// Method to check password
+userSchema.methods.matchPassword = async function(enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
+const User = mongoose.model('User', userSchema);
+module.exports = User;

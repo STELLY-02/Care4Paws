@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const bodyParser = require('body-parser');
 const cors = require("cors");
+const path = require('path');
 
 //database connection
 const dbConnect = require("./config/dbConnect");
@@ -11,6 +12,8 @@ const userRoutes = require("./routes/userRoutes");
 const communityPostRoutes = require("./routes/communityPostRoutes");
 const routeUpload = require('./routes/routeUpload');
 const { generateStreamToken } = require('./middlewares/generateStreamToken');
+const petRoutes = require("./routes/petRoutes");
+const adoptFormRoutes = require('./routes/AdoptFormRoutes');
 
 
 dbConnect();
@@ -24,8 +27,8 @@ app.use(express.json()); //enable parsing of json
 app.use(
     cors(
         {
-        origin: "*", // Allow requests from frontend
-        methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
+        origin: "http://localhost:3000", // Allow requests from frontend
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Specify allowed methods
         allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true, // Allow cookies if needed
     }
@@ -46,6 +49,18 @@ app.use("/api/auth", authRoutes); //handling authentication, request to /api/aut
 app.use("/api/users", userRoutes); //handling users, users is the API endpoints
 app.use("/api/communityPost", communityPostRoutes); //handling community module
 app.use("/api/uploadPic", routeUpload); //handling upload image
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/api/pets", petRoutes);
+app.use('/api/adopt', adoptFormRoutes);
+
+app.use((req, res, next) => {
+    console.log('Request:', {
+        method: req.method,
+        path: req.path,
+        headers: req.headers
+    });
+    next();
+});
 
 app.get('/',(req,res)=>{
     res.send('Welcome to Care4Paws')

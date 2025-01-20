@@ -3,6 +3,14 @@ import axios from 'axios'; //send HTTP requests
 
 const BASE_URL = 'http://localhost:8085/api';
 
+const api = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true,
+  headers: {
+      'Content-Type': 'application/json'
+  }
+});
+
 /* Handling authentication */
 export const loginUser = async (credentials) => {
     try {
@@ -491,5 +499,166 @@ export const createCampaigns = async (campaignsData) => {
   } catch (error) {
       console.error("Error creating post:", error);
       throw error;
+  }
+};
+
+export const addPet = async (petData) => {
+  try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          throw new Error('No authentication token found');
+      }
+
+      // Debug log before sending
+      console.log('Sending pet data:', {
+          hasPhoto: petData.get('photo') !== null,
+          fields: Array.from(petData.entries()).map(([key, value]) => 
+              key === 'photo' ? `${key}: ${value.name}` : `${key}: ${value}`
+          )
+      });
+
+      const response = await axios.post(`${BASE_URL}/pets`, petData, {  ///check if api here needed at backend
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              // Important: Don't set Content-Type here, let axios set it for FormData
+          },
+          withCredentials: true,
+          // Add timeout and validate status
+          timeout: 30000,
+          validateStatus: function (status) {
+              return status >= 200 && status < 500; // Don't reject if status is less than 500
+          }
+      });
+
+      // Check response status
+      if (response.status === 400) {
+          throw new Error(response.data.error || 'Bad request');
+      }
+
+      if (response.status !== 201) {
+          throw new Error('Failed to add pet');
+      }
+
+      console.log('Server response:', response.data);
+      return response.data;
+  } catch (error) {
+      console.error('Add pet error details:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          headers: error.response?.headers
+      });
+
+      // Throw specific error messages
+      if (error.response?.status === 400) {
+          throw new Error(error.response.data.error || 'Invalid pet data');
+      }
+      if (error.response?.status === 401) {
+          throw new Error('Please login again');
+      }
+      throw new Error(error.message || 'Failed to add pet');
+  }
+};
+
+// Submit adoption form
+export const submitAdoptForm = async (petId, formData) => {
+  try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          throw new Error('No authentication token found');
+      }
+
+      console.log('Submitting adoption form:', {
+          petId,
+          formData
+      });
+
+      const response = await api.post(`/adopt/${petId}/submit`, formData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      });
+
+      return response.data;
+  } catch (error) {
+      console.error('Submit adoption form error:', {
+          message: error.message,
+          response: error.response?.data
+      });
+
+      if (error.response?.status === 400) {
+          throw new Error(error.response.data.error || 'Invalid form data');
+      }
+      if (error.response?.status === 401) {
+          throw new Error('Please login to submit adoption form');
+      }
+      throw new Error(error.message || 'Failed to submit adoption form');
+  }
+};
+
+// Update adoption status (for coordinator)
+export const updateAdoptionStatus = async (requestId, status) => {
+  try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          throw new Error('No authentication token found');
+      }
+
+      console.log('Updating adoption status:', {
+          requestId,
+          status
+      });
+
+      const response = await api.patch(`/adopt/${requestId}/status`, 
+          { status },
+          {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+          }
+      );
+
+      return response.data;
+  } catch (error) {
+      console.error('Update adoption status error:', {
+          message: error.message,
+          response: error.response?.data
+      });
+
+      if (error.response?.status === 400) {
+          throw new Error(error.response.data.error || 'Invalid status');
+      }
+      if (error.response?.status === 401) {
+          throw new Error('Please login to update adoption status');
+      }
+      throw new Error(error.message || 'Failed to update adoption status');
+  }
+};
+
+// Get adoption requests (for coordinator)
+export const getAdoptionRequests = async () => {
+  try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          throw new Error('No authentication token found');
+      }
+
+      const response = await api.get('/adopt', {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      });
+
+      return response.data;
+  } catch (error) {
+      console.error('Get adoption requests error:', {
+          message: error.message,
+          response: error.response?.data
+      });
+
+      if (error.response?.status === 401) {
+          throw new Error('Please login to view adoption requests');
+      }
+      throw new Error(error.message || 'Failed to fetch adoption requests');
   }
 };

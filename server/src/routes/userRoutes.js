@@ -7,6 +7,8 @@ const router = express.Router();
 const mongoose = require('mongoose')
 require("../models/userModel");
 const User = mongoose.model("User");
+require('../models/NotificationModel');
+const Notification = mongoose.model("Notification");
 
 //Only admin can access this router
 router.get("/admin", verifyToken, authorizeRoles("admin"), (req,res) => {
@@ -70,6 +72,25 @@ router.post('/:userId/follow', async (req, res) => {
       res.status(500).json({ message: 'Internal server error', error: error.message });
     }
   });
+
+  router.get('/notifications', verifyToken, async (req, res) => {
+    try {
+        console.log('Notifications route hit');
+        console.log('User from token:', req.user);
+        console.log("usr Id ", req.user._id);
+
+        const userId = new mongoose.Types.ObjectId(req.user._id);
+        const notifications = await Notification.find({ 
+          userId: userId, 
+        }).sort({ createdAt: -1 });
+        
+        console.log('Found notifications:', notifications);
+        res.json(notifications);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Failed to fetch notifications' });
+    }
+});
 
   router.get('/:userId', async (req, res) => {
     try {

@@ -16,6 +16,11 @@ import Landing from './pages/Landing';
 import LiveStreamRouting from './components/CommunityComponent/LiveStreamRouting';
 import { HLSLivestreamUI } from './components/CommunityComponent/viewers/HLSLivestream';
 // import { WebRTCLivestream } from './components/CommunityComponent/viewers/WebRTCLivestream';
+import CoordinatorAdoptionPage from './pages/AdoptionPage/CoorAdoption/CoordinatorAdoptionPage';
+import UserAdoptionPage from './pages/AdoptionPage/UserAdoption/UserAdoptionPage';
+import NotificationsPage from './pages/NotificationPage';
+import NotificationPage from "./pages/NotificationPage";
+
 
 function App() {
     return (
@@ -26,6 +31,8 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/edit-profile" element={<EditProfilePage />} />
                 <Route path="/user-profile/:interestedId" element={<UserProfile />} />
+                <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/notification" element={<NotificationPage />} />
                 {/* Protected Routes */}
                 <Route
                     path="/admin/*"
@@ -45,6 +52,7 @@ function App() {
                             <Routes>
                                 <Route path="" element={<CoordinatorDashboard />} />
                                 <Route path="/community/*" element={<CoordinatorCommunityPage />} />
+                                <Route path="/adoption" element={<CoordinatorAdoptionPage />} />
                                 <Route path="/community/livestream/*" element={<LiveStreamRouting />}>
                                 <Route path="viewers">
                                     <Route path="hls/:callId" element={<HLSLivestreamUI />} />
@@ -63,6 +71,7 @@ function App() {
                                 <Route path="" element={<UserDashboard />} />
                                 <Route path="/be-pet-experts" element={<Chatbot />} />
                                 <Route path="/community/*" element={<UserCommunityPage />} />
+                                <Route path="/adoption" element={<UserAdoptionPage />} />
                                 <Route path="/community/livestream/*" element={<LiveStreamRouting />}>
                                 <Route path="viewers">
                                     <Route path="hls/:callId" element={<HLSLivestreamUI />} />
