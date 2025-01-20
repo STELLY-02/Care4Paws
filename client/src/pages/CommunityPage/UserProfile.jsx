@@ -172,7 +172,11 @@ const UserProfile = () => {
               />
             ))
           ) : (
-            <p>No posts to display.</p>)}
+            <div className='empty-spacee'>
+               <img src={Logo} alt="" className="logo" />
+              <p className="no-post-show">User has't posted anything.</p>
+            </div>
+            )}
       </div>
         </div>
       </div>

@@ -13,10 +13,10 @@
         .backstage-header-title {
           font-style: normal;
           font-weight: 500;
-          font-size: 20px;
+          font-size: 22px;
           line-height: 25px;
           margin: 0;
-          color: #fcfcfc;
+          color: #000;
         }
 
         .backstage-header-subtitle {
@@ -25,14 +25,14 @@
           font-size: 17px;
           line-height: 20px;
           margin: 0;
-          color: #cececd;
+          color: #3b3b3b;
         }
       }
     }
 
     &.pull-center {
       display: flex;
-      justify-content: center;
+      justify-content: end;
     }
 
     &.pull-right {

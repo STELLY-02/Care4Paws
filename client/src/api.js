@@ -32,6 +32,25 @@ export const registerUser = async (userData) => {
     }
 };
 
+export const editProfile = async (userData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.put(`${BASE_URL}/auth/edit-profile`, userData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data.message);
+    } else {
+      throw new Error("Network error. Please try again.");
+    }
+  }
+};
+
 /* For Community Module */
 export const fetchPosts = async () => {
     try {
@@ -301,6 +320,18 @@ export const likePost = async (_id) => {
       return response.data;
     } catch (error) {
       console.error("Error fetching coordinators:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+
+  export const searchUsers = async (username) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/communityPost/search-users`, {
+        params: { username },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error searching users:", error.response?.data || error.message);
       throw error;
     }
   };

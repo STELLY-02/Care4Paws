@@ -1,0 +1,19 @@
+.user-list{
+    font-size: 20px;
+    text-align: start;
+    background-color: #FFF0D1;
+    padding: 5px;
+    margin: 0;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.user-list:hover{
+    background-color: #795757;
+    color: #FFF0D1;
+}
+
+.search-bar-user{
+    display: flex;
+    flex-direction: row;
+
+}

@@ -45,18 +45,19 @@ const RegistrationModal = ({ closeModal, eventId, eventFee }) => {
       createdAt: new Date(), // Set default value
     };
 
-    if (eventFee > 0) {
-      setParticipantData(participantData);
-      setShowPaymentModal(true);
-    } else {
+    // if (eventFee > 0) {
+    //   setParticipantData(participantData);
+    //   setShowPaymentModal(true);
+    // } else {
       try {
         const response = await registerParticipants(participantData);
         console.log('Registration successful:', response);
+        alert('Thank you for joining! Check your email for further comfirmation.')
         closeModal();
       } catch (error) {
         console.error('Error registering participants:', error);
       }
-    }
+    // }
   };
 
   const totalPayment = (guests.length + 1) * eventFee;
@@ -142,93 +143,93 @@ const RegistrationModal = ({ closeModal, eventId, eventFee }) => {
           )}
           <button className="full-button" type="submit">Register</button>
         </form>
-        {showPaymentModal && (
+        {/* {showPaymentModal && (
           <PaymentModal
             closeModal={() => setShowPaymentModal(false)}
             participantData={participantData}
             totalPayment={totalPayment}
             onClose={closeModal}
           />
-        )}
+        )} */}
       </div>
     </div>
   );
 };
 
-const PaymentModal = ({ closeModal, participantData, totalPayment, onClose }) => {
-  const [paymentProof, setPaymentProof] = useState(null);
+// const PaymentModal = ({ closeModal, participantData, totalPayment, onClose }) => {
+//   const [paymentProof, setPaymentProof] = useState(null);
 
-  const handleFileChange = (e) => {
-    console.log('handleFileChange called');
-    const file = e.target.files[0];
-    const reader = new FileReader();
+//   const handleFileChange = (e) => {
+//     console.log('handleFileChange called');
+//     const file = e.target.files[0];
+//     const reader = new FileReader();
 
-    reader.onload = () => {
-      console.log('File converted to Base64:', reader.result);
-      setPaymentProof(reader.result); // Base64-encoded string
-    };
+//     reader.onload = () => {
+//       console.log('File converted to Base64:', reader.result);
+//       setPaymentProof(reader.result); // Base64-encoded string
+//     };
 
-    reader.onerror = (error) => {
-        console.error("Error reading image file:", error);
-    };
+//     reader.onerror = (error) => {
+//         console.error("Error reading image file:", error);
+//     };
 
-    reader.readAsDataURL(file); // Converts to Base64
-};
+//     reader.readAsDataURL(file); // Converts to Base64
+// };
 
 
-  const handleConfirmPayment = async () => {
-    const formData = {
-      eventId: participantData.eventId,
-      name: participantData.name,
-      age: participantData.age,
-      email: participantData.email,
-      contactNumber: participantData.contactNumber,
-      guests: JSON.stringify(participantData.guests),
-      paymentProof: paymentProof, 
-      isConfirmed: false, // Set default value
-      createdAt: new Date(), // Set default value
-    }
+//   const handleConfirmPayment = async () => {
+//     const formData = {
+//       eventId: participantData.eventId,
+//       name: participantData.name,
+//       age: participantData.age,
+//       email: participantData.email,
+//       contactNumber: participantData.contactNumber,
+//       guests: JSON.stringify(participantData.guests),
+//       paymentProof: paymentProof, 
+//       isConfirmed: false, // Set default value
+//       createdAt: new Date(), // Set default value
+//     }
 
-    try {
-      console.log('Submitting payment proof:', formData);
-      const response = await registerParticipants(formData);
-      console.log('Registration successful:', response);
-      alert("Registered successfully! A confirmation email will be sent to you.");
-      closeModal();
-      onClose();
-    } catch (error) {
-      console.error('Error registering participants:', error);
-    }
-  };
+//     try {
+//       console.log('Submitting payment proof:', formData);
+//       const response = await registerParticipants(formData);
+//       console.log('Registration successful:', response);
+//       alert("Registered successfully! A confirmation email will be sent to you.");
+//       closeModal();
+//       onClose();
+//     } catch (error) {
+//       console.error('Error registering participants:', error);
+//     }
+//   };
 
-  return (
-    <div className="modal">
-      <div className="modal-content">
-        <h2>Complete Payment</h2>
-        <p>
-          Please scan the QR code below to submit the event fee. Once your
-          transaction is complete, your registration will be confirmed, and a
-          confirmation email will be sent to {participantData.email}.
-        </p>
-        <p>
-          Your Total Payment: <strong>${totalPayment}</strong>
-        </p>
-        <div className="qr-code">
-          <img src="qr-code-placeholder.png" alt="QR Code for Payment" />
-        </div>
-        <label>
-          Payment Proof:
-          <input
-            type="file"
-            onChange={handleFileChange}
-            required
-          />
-        </label>
-        <button onClick={handleConfirmPayment}>Confirm Payment</button>
-        <button onClick={closeModal}>Cancel</button>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="modal">
+//       <div className="modal-content">
+//         <h2>Complete Payment</h2>
+//         <p>
+//           Please scan the QR code below to submit the event fee. Once your
+//           transaction is complete, your registration will be confirmed, and a
+//           confirmation email will be sent to {participantData.email}.
+//         </p>
+//         <p>
+//           Your Total Payment: <strong>${totalPayment}</strong>
+//         </p>
+//         <div className="qr-code">
+//           <img src="qr-code-placeholder.png" alt="QR Code for Payment" />
+//         </div>
+//         <label>
+//           Payment Proof:
+//           <input
+//             type="file"
+//             onChange={handleFileChange}
+//             required
+//           />
+//         </label>
+//         <button onClick={handleConfirmPayment}>Confirm Payment</button>
+//         <button onClick={closeModal}>Cancel</button>
+//       </div>
+//     </div>
+//   );
+// };
 
 export default RegistrationModal;

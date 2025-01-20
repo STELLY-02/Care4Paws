@@ -1,14 +1,13 @@
 .LiveStreamRouting{
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #e3e2e0;
+    padding: 50px 20px;
+    padding-bottom: 50px; */
+    background-color: #faf5eb;
     border-radius: 8px;
-    padding: 50px;
-    padding-bottom: 50px;
-}
-
-.logo-livestream{
-    width: 200px;
-}
+    height: fit-content;
+    padding: 50px 20px;
+    z-index: -1000;
+}   

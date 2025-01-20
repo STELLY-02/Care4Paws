@@ -459,6 +459,22 @@ router.get("/fetch-comments/:postId", async (req, res) => {
     }
   });
 
+  router.get('/search-users', async (req, res) => {
+    try {
+      const { username } = req.query; // Retrieve the search query from request query parameters
+  
+      // Fetch users with a username that matches the search query (case-insensitive)
+      const users = await User.find({
+        username: { $regex: username, $options: 'i' }, // 'i' makes it case-insensitive
+      });
+  
+      res.json(users); // Return the matched users
+    } catch (error) {
+      console.error("Error searching users:", error);
+      res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+  });
+
   router.post('/create-event', verifyToken, async (req, res) => {
     const {
       eventName,

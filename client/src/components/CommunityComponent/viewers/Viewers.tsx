@@ -69,11 +69,11 @@ const SetupForm = () => {
         }}
       />
       <Stack direction="row" spacing={3}>
-        <Link to={callId ? `/coordinator/community/viewers/webrtc/${callId}` : '#'}>
+        {/* <Link to={callId ? `/coordinator/community/viewers/webrtc/${callId}` : '#'}>
           <Button variant="contained" disabled={!callId}>
             Join (WebRTC)
           </Button>
-        </Link>
+        </Link> */}
         <Link to={callId ? `/coordinator/community/viewers/hls/${callId}` : '#'}>
           <Button variant="contained" disabled={!callId}>
             Join (HLS)

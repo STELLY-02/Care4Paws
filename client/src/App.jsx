@@ -3,19 +3,19 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import EditProfilePage from './pages/EditProfilePage';
 import AdminDashboard from './pages/AdminDashboard';
 import CoordinatorDashboard from './pages/CoordinatorDashboard';
 import UserDashboard from './pages/UserDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import Chatbot from "./components/Chatbot";
-import EditProfilePage from "./components/EditProfilePage";
 import UserCommunityPage from './pages/CommunityPage/UserCommunity/UserCommunityPage';
 import CoordinatorCommunityPage from './pages/CommunityPage/CoordinatorCommunity/CoordinatorCommunityPage';
 import UserProfile from './pages/CommunityPage/UserProfile';
 import Landing from './pages/Landing';
 import LiveStreamRouting from './components/CommunityComponent/LiveStreamRouting';
 import { HLSLivestreamUI } from './components/CommunityComponent/viewers/HLSLivestream';
-import { WebRTCLivestream } from './components/CommunityComponent/viewers/WebRTCLivestream';
+// import { WebRTCLivestream } from './components/CommunityComponent/viewers/WebRTCLivestream';
 
 function App() {
     return (
@@ -24,6 +24,7 @@ function App() {
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/edit-profile" element={<EditProfilePage />} />
                 <Route path="/user-profile/:interestedId" element={<UserProfile />} />
                 {/* Protected Routes */}
                 <Route
@@ -47,7 +48,7 @@ function App() {
                                 <Route path="/community/livestream/*" element={<LiveStreamRouting />}>
                                 <Route path="viewers">
                                     <Route path="hls/:callId" element={<HLSLivestreamUI />} />
-                                    <Route path="webrtc/:callId" element={<WebRTCLivestream />} />
+                                    {/* <Route path="webrtc/:callId" element={<WebRTCLivestream />} /> */}
                                 </Route>
                                 </Route>
                             </Routes>
@@ -61,7 +62,13 @@ function App() {
                             <Routes>
                                 <Route path="" element={<UserDashboard />} />
                                 <Route path="/be-pet-experts" element={<Chatbot />} />
-                                <Route path="/community" element={<UserCommunityPage />} />
+                                <Route path="/community/*" element={<UserCommunityPage />} />
+                                <Route path="/community/livestream/*" element={<LiveStreamRouting />}>
+                                <Route path="viewers">
+                                    <Route path="hls/:callId" element={<HLSLivestreamUI />} />
+                                    {/* <Route path="webrtc/:callId" element={<WebRTCLivestream />} /> */}
+                                </Route>
+                                </Route>
                             </Routes>
                         </ProtectedRoute>
                     }

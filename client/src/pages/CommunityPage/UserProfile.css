@@ -76,3 +76,15 @@
 .backButton:hover {
   background-color: #ddd; /* Optional hover effect */
 }
+
+.no-post-show{
+
+}
+
+.empty-spacee{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}

@@ -11,7 +11,7 @@ export const ViewerControls = () => {
 
   const onClickHandler = async () => {
     await call?.leave();
-    navigate('/');
+    navigate('/coordinator/community');
   };
 
   return (

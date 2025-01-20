@@ -10,15 +10,16 @@ import {
   useCallStateHooks,
 } from '@stream-io/video-react-sdk';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const BackstageControls = () => {
   const call = useCall();
   if (!call) return null;
   return (
     <div className="backstage-controls">
-      <ToggleAudioPublishingButton caption="" />
-      <ToggleVideoPublishingButton caption="" />
-      <CancelCallButton />
+      <ToggleAudioPublishingButton caption="Audio" />
+      <ToggleVideoPublishingButton caption="Video" />
+      {/* <CancelCallButton /> */}
       <ToggleLivestreamButton call={call} />
     </div>
   );
@@ -31,6 +32,7 @@ const ToggleLivestreamButton = (props: { call: Call }) => {
   const ingress = useCallIngress();
   const isBroadcasting = useIsCallHLSBroadcastingInProgress();
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     setIsAwaitingResponse((isAwaiting) => {
       if (isAwaiting) return false;
@@ -48,16 +50,25 @@ const ToggleLivestreamButton = (props: { call: Call }) => {
         isBroadcasting ? 'broadcasting' : ''
       }`}
       onClick={async () => {
-        if (isBroadcasting) {
-          call.stopLive().catch((err) => {
-            console.error('Error stopping livestream', err);
-          });
-        } else {
-          call.goLive({ start_hls: true }).catch((err) => {
-            console.error('Error starting livestream', err);
-          });
-        }
         setIsAwaitingResponse(true);
+        if (isBroadcasting) {
+          try {
+            await call.stopLive();
+            navigate('/coordinator/community'); // Navigate after successfully stopping the stream
+          } catch (err) {
+            console.error('Error stopping livestream', err);
+          } finally {
+            setIsAwaitingResponse(false); // Reset the button state
+          }
+        } else {
+          try {
+            await call.goLive({ start_hls: true });
+          } catch (err) {
+            console.error('Error starting livestream', err);
+          } finally {
+            setIsAwaitingResponse(false); // Reset the button state
+          }
+        }
       }}
     >
       {isAwaitingResponse ? (

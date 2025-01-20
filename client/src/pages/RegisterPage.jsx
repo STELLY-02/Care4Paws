@@ -3,14 +3,15 @@ import "./Register.css";
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../api';
 import Alert from '@mui/material/Alert'; // Material-UI Alert for notifications
-import care4pawsLogo from "../assets/Logo_Care4Paws.png"
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; 
+import Logo from "../assets/Logo-fit.png"
+import axios from 'axios';
 
 function RegisterPage() {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         username: '',
-        avaterSrc: '',
+        avatarSrc: '',
         email: '',
         password: '',
         role: '',
@@ -21,6 +22,7 @@ function RegisterPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const navigate = useNavigate();
+    const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
 
     const handleChange = (e) => {
         setFormData((prevData) => ({
@@ -54,29 +56,52 @@ function RegisterPage() {
         return true;
     };
 
-    const handleProPicUpload = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
+    const handleProPicUpload = async (e) => {
+      const file = e.target.files[0];
+      console.log("handleImageUpload called");
+      console.log("Selected file:", file);
+      const formData = new FormData();
+      formData.append('image', file);
+  
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:8085/api/uploadPic/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log("Image uploaded:", response.data);
+        setUploadedImageUrl(response.data.data); // Cloudinary URL
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    };
+
+    const waitForUploadedImage = async () => {
+      const maxRetries = 10; // Limit retries to prevent infinite loops
+      const retryDelay = 500; // Retry every 500ms
+      let retries = 0;
     
-        reader.onload = () => {
-            setFormData((prevData) => ({
-                ...prevData,
-                avaterSrc: reader.result, // Update `avaterSrc` with Base64 string
-            }));
-            console.log("Profile picture uploaded:", reader.result);
-        };
-    
-        reader.onerror = (error) => {
-            console.error("Error reading image file:", error);
-        };
-    
-        reader.readAsDataURL(file); // Converts to Base64
+      return new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+          if (uploadedImageUrl) {
+            clearInterval(interval);
+            resolve(); // Resolve when uploadedImageUrl is available
+          } else if (retries >= maxRetries) {
+            clearInterval(interval);
+            reject(new Error("Image upload timed out. Please try again."));
+          } else {
+            retries++;
+          }
+        }, retryDelay);
+      });
     };
 
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        formData.avatarSrc = uploadedImageUrl;
         console.log('Form submitted with data: ', formData);
 
         // Validate form before sending request
@@ -90,13 +115,15 @@ function RegisterPage() {
             setError('');
             setSuccess('');
             console.log('Making API call to register user...');
+            await waitForUploadedImage();
 
             await registerUser(formData); // Call the API to register the user
             console.log('Registration successful');
             setSuccess('Registration successful! Please log in.');
             
             setTimeout(() => {
-                navigate('/login'); // Redirect to login page after success
+              if (formData.role === 'coordinator') navigate('/coordinator');
+              else navigate('/user');
             }, 2000); // Redirect after 2 seconds to show success message
         } catch (err) {
             console.error('Registration error: ', err); // Log any error during registration
@@ -107,18 +134,18 @@ function RegisterPage() {
     return (
         <div className="register-container">
           <div className= "register-content">
-                  <div className="welcome-section1">
-                    <h1>Welcome to <span className="care4paws-title">Care4Paws</span></h1>
-                    <p>Find your loyal companion and connect with fellow pet lovers.<br />
-                      Together, we can share, care, and make a difference.
-                    </p>
-       
-                    <div className="logo-container">
-                      <img src={care4pawsLogo} alt="Care4Paws Logo" className="logo" />
-            </div>
-          </div>
+          <div className="welcome-section">
+                <img src={Logo} alt="Care4Paws Logo" className="logo" />
+                <h1>
+                    Welcome to <span className="care4paws-title">Care4Paws</span>
+                </h1>
+                <p>
+                    Find your loyal companion and connect with fellow pet lovers.<br />
+                    Together, we can share, care, and make a difference.
+                </p>
+                </div>
           <div className="register-section">
-            <h2>Register</h2>
+            <h1>Register</h1>
             <p>First create your account.</p>
             <form className="register-form" onSubmit={handleSubmit}>
               <div className="form-row">
@@ -164,33 +191,55 @@ function RegisterPage() {
                         onChange={handleChange}
                         required
                     />
+                <input
+                        name="phoneNumber"
+                        placeholder="Phone Number"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        required
+                    />
+            </div>
+            <div className="form-row">
+                    <label className="label-width" htmlFor="profile-picture">Choose your profile picture</label>
                     <input
-                    name="avaterSrc"
+                    name="avatarSrc"
                     type="file"
                     accept="image/*"
                     onChange={handleProPicUpload} 
                     required
                 />
             </div>
-    
-              <div className="role-row">
-              <select name="role" value={formData.role} onChange={handleChange} required>
+
+            <div className="form-row">
+              <textarea
+                name="description"
+                placeholder="Write a little decription of you"
+                value={formData.description}
+                onChange={handleChange}
+                className="text-description"
+              />
+            </div>
+
+              <div className="role-column">
+              <h5>Please choose your role accordingly for different experience !<br/>
+              Choose Coordinator, if your are part of an organization</h5>
+              <select name="role" value={formData.role} onChange={handleChange} required className="custom-select">
               <option value="">Select Role</option>
               <option value="coordinator">Coordinator</option>
               <option value="user">User</option>
           </select>
                 </div>
-              <div className="checkbox-row">
+              {/* <div className="checkbox-row">
                 <label>
                   <input type="checkbox" /> Remember me
                 </label>
                 <label>
                   <input type="checkbox" /> I agree to the Terms and Privacy policy
                 </label>
-              </div>
+              </div> */}
               <button type="submit" className="create-account-btn">Create account</button>
             </form>
-            <p>Already have an account? <Link to="/">Sign In</Link></p>
+            <p>Already have an account? <Link to="/login">Sign In</Link></p>
           </div>
           
           </div>

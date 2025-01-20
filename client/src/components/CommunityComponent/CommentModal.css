@@ -53,7 +53,8 @@
 
 .comment-content {
   display: flex;
-  align-items: center;
+  align-items: start;
+  flex-direction: column;
 }
 
 .comment-content img {
@@ -65,7 +66,6 @@
 
 .comment-content div {
   display: flex;
-  flex-direction: column;
 }
 
 .comment-content p {
@@ -81,8 +81,44 @@
 .header-profile{
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: start;
+}
+
+.header-profile img{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.header-profile h2{
+  line-height: 40px;
+}
+
+.comment-caption{
+  font-size: 25px;
+
+}
+
+.user-comment-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 100%;
+  padding: 5px;
 }
 
 .user-comment{
   margin: 10px;
+  font-size: 20px;
+  padding: 0;
+  margin: 0;
+  line-height: 40px;
+}
+
+.comment-reply{
+  height: fit-content;
+  justify-self: end;
 }

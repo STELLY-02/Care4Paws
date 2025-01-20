@@ -13,7 +13,6 @@ export const Hosts = () => {
 
   return (
     <StreamVideo client={client}>
-    <div>Stream Video is initialized</div>  {/* Check if this gets rendered */}
     <Outlet />
   </StreamVideo>
   );

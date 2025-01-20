@@ -18,6 +18,7 @@ import Event from "./UserEvent";
 import "./UserCommunityPage.css"
 import RecommendationBox from "../../../components/CommunityComponent/RecommendationBox";
 import { fetchCoordinators, followUser, unfollowUser, fetchFollowedIds } from '../../../api';
+import LiveStreamRouting from "../../../components/CommunityComponent/LiveStreamRouting"
 
 
 function UserCommunityPage() {
@@ -40,6 +41,8 @@ const renderTabContent = () => {
       return <ExploreCommunity />;
     case "event":
       return <Event />;
+    case "myLivestream":
+      return <LiveStreamRouting />;
     default:
       return <div>Tab not found</div>;
   }

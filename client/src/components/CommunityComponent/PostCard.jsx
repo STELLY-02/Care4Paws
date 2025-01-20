@@ -107,7 +107,7 @@ const handleLikeClick = async () => {
           avatarSrc={avatarSrc} 
           username={username} 
         />
-        <button onClick={handleDelete}>Delete</button>
+        {/* <button onClick={handleDelete}>Delete</button> */}
       </div>
       <div className='image-box'>
       {imageSrc && (

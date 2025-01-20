@@ -43,10 +43,13 @@ const userSchema = new mongoose.Schema(
             type: String,
             //required: true,
         },
-        following: [{ 
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'User' 
-        }]
+        following: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'User',
+            }
+          ],
+          default: []
     },
     {
         timestamps: true,

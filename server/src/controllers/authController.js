@@ -4,7 +4,7 @@ const User = require("../models/userModel");
 
 const register = async (req, res) => {
     try {
-        const { email, password, role, username, avaterSrc, firstName, lastName, phoneNumber } = req.body;
+        const { email, password, role, username, avatarSrc, firstName, lastName, phoneNumber } = req.body;
 
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         const passwordStrengthRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
@@ -35,7 +35,7 @@ const register = async (req, res) => {
             firstName,
             lastName,
             phoneNumber,
-            avaterSrc
+            avatarSrc
         });
 
         await newUser.save();
@@ -90,8 +90,29 @@ const logout = async (req, res) => {
     }
 };
 
+const editProfile = async (req, res) => {
+    try {
+      const userId = req._id; // Assuming user ID comes from token
+      const { username, email, password, avatarSrc, firstName, lastName, phoneNumber, description } = req.body;
+    console.log("this", userId);
+    console.log("that", req.body)
+      // Optional: Hash password if provided
+      const updatedData = { username, email, avatarSrc, firstName, lastName, phoneNumber, description };
+      if (password) {
+        updatedData.password = await bcrypt.hash(password, 10);
+      }
+  
+      const updatedUser = await User.findByIdAndUpdate(userId, updatedData, { new: true });
+      res.status(200).json(updatedUser);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update profile", error: err.message });
+    }
+  };
+  
+
 module.exports = {
     register,
     login,
-    logout
+    logout,
+    editProfile
 };

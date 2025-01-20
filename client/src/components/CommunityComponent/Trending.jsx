@@ -7,6 +7,7 @@ import { fetchTrendingPosts, fetchPosts, fetchActiveCampaigns } from '../../api'
 import TrendingPost from './TrendingPost';
 import CuteDog3 from "../../assets/cutedog3.png"
 import CuteDog2 from "../../assets/cutedog2.png"
+import UserSearchBar from './UserSearchBar';
 
 const TrendingSection = () => {
 
@@ -69,6 +70,7 @@ const TrendingSection = () => {
           <h3>Trending Posts</h3>
           <p>See what is on trend now and find your paw-friends!</p>
           </div>
+          <UserSearchBar />
           <div className="trending-posts">
             {posts.map((post, index) => (
             <TrendingPost key={index} imageSrc={post.photo} post={post} />

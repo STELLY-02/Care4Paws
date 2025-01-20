@@ -55,11 +55,11 @@ function CommentModal({ post, updateCommentCount, onClose }) {
               <img src={comment.author?.avatarSrc || "/default-avatar.png"} alt={comment.author?.username || "Anonymous"} />  
               <p>{comment.author?.username || "Anonymous"}</p>
             </div>
-            <div className="user-comment">
-              <p>{comment.content}</p>
+            <div className="user-comment-div">
+              <h2 className="user-comment">{comment.content}</h2>
+              <button className="comment-reply" onClick={() => setParentCommentId(comment._id)}>Reply</button>
             </div>
           </div>
-          <button onClick={() => setParentCommentId(comment._id)}>Reply</button>
           {renderComments(comments, comment._id)}
         </div>
       ));
@@ -74,11 +74,11 @@ function CommentModal({ post, updateCommentCount, onClose }) {
         </button>
         <div className="modal-post">
           <div className="header-profile">
-            <h2>{username}</h2>
             <img src={avatarSrc} alt={username}></img>
+            <h2>{username}</h2>
           </div>
           <div>
-            <p>{caption}</p>
+            <h2 className="comment-caption">{caption}</h2>
             {photo && <img src={photo} alt={caption} />}
           </div>
         </div>

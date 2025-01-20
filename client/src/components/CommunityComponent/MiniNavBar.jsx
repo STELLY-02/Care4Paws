@@ -12,7 +12,7 @@ function MiniNavBar({ activeTab, setActiveTab }) {
       { id: "myFeed", text: "My Feed" },
       { id: "exploreCommunity", text: "Explore Community" },
       { id: "event", text: "Event" },
-      { id: "livestream", text: "Livestream Now" },
+      { id: "myLivestream", text: "My Livestream" },
     );
   }
     else if (role === "coordinator"){
