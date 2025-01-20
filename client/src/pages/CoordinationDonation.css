@@ -1,0 +1,132 @@
+.DonationC {
+  display: flex;
+  flex-direction: column;
+}
+
+.DonationCSidebar {
+  display: flex;
+}
+
+.content-Donation-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  width: 100%;
+}
+
+.Cdonation-history {
+  width: 48%;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.Cdonation-history h2 {
+  margin-bottom: 20px;
+}
+
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: red;
+}
+
+.coordinator-Donation-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.coordinator-Donation-form input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.coordinator-Donation-form button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.coordinator-Donation-form button:hover {
+  background-color: #0056b3;
+}
+
+.delete-Donation-button {
+  margin-top: 20px;
+  background-color: #dc3545;
+}
+
+.delete-Donation-button:hover {
+  background-color: #c82333;
+}
+
+.Cdonation-history ul {
+  list-style: none;
+  padding: 0;
+}
+
+.Cdonation-history li {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.coordinator-details {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.coordinator-details p {
+  font-size: 1.2rem; /* Slightly larger font size */
+  margin: 0;
+  color: #555555;
+  line-height: 1.8; /* Adjusts line height for better readability */
+}
+
+.coordinator-details:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.coordinator-details h3 {
+  font-size: 1.2rem;
+  color: #444444;
+  margin-bottom: 10px;
+}
+
+/* .coordinator-details p {
+  font-size: 1rem;
+  color: #666666;
+  margin: 5px 0;
+  line-height: 1.5;
+} */
+
+.coordinator-Donation-form {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.coordinator-Donation-form h2 {
+  font-size: 1.5rem;
+  color: #333333;
+  margin-bottom: 20px;
+  text-align: center;
+}

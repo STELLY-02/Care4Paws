@@ -662,3 +662,369 @@ export const getAdoptionRequests = async () => {
       throw new Error(error.message || 'Failed to fetch adoption requests');
   }
 };
+
+export const createEducationPost = async (postData, token) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:8085/api/educationPost/create",
+      postData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass the JWT token for authentication
+        },
+      }
+    );
+    return response.data; // Response from backend (post data or success message)
+  } catch (error) {
+    console.error(
+      "Error creating education post:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "Failed to create education post"
+    );
+  }
+};
+
+export const getEducationPosts = async (token) => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8085/api/educationPost/educationContent", // Adjust URL if necessary
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass the JWT token for authentication
+        },
+      }
+    );
+    return response.data.posts; // Return only the posts array from the response
+  } catch (error) {
+    console.error(
+      "Error fetching education posts:",
+      error.response?.data || error.message
+    );
+    throw new Error("Failed to fetch education posts");
+  }
+};
+
+export const getEducationPostById = async (id) => {
+  try {
+    const response = await fetch(
+      `http://localhost:8085/api/educationPost/educationPost/${id}`
+    ); // Fetch post by ID
+    if (!response.ok) {
+      throw new Error("Failed to fetch post");
+    }
+    const data = await response.json(); // Get the post data
+    return data; // Return the post data
+  } catch (error) {
+    console.error("Error fetching post:", error.message);
+    throw new Error("Failed to fetch post");
+  }
+};
+
+export const deleteEducationPost = async (postId, token) => {
+  try {
+    const response = await axios.delete(
+      `http://localhost:8085/api/educationPost/delete/${postId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass the JWT token for authentication
+        },
+      }
+    );
+
+    // Ensure the response is successful
+    if (response.status !== 200) {
+      throw new Error("Failed to delete post"); // Or a more specific error based on response status
+    }
+
+    return response.data; // Success response from backend
+  } catch (error) {
+    console.error(
+      "Error deleting education post:",
+      error.response?.data || error.message
+    );
+    throw new Error("Failed to delete education post");
+  }
+};
+
+export const createCoordinator = async (formData, token) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:8085/api/coordinatorDonation/donateDetailsC",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in headers
+        },
+      }
+    );
+    return response.data; // Success response from the backend
+  } catch (error) {
+    console.error(
+      "Error creating coordinator:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "Failed to create coordinator"
+    );
+  }
+};
+
+export const donateUser = async (donationData, token) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:8085/api/donation/donateUser",
+      donationData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token for authentication
+        },
+      }
+    );
+
+    if (response.status !== 201) {
+      throw new Error("Failed to create user donation.");
+    }
+
+    return response.data; // Success response from backend
+  } catch (error) {
+    console.error(
+      "Error creating user donation:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "Failed to create user donation"
+    );
+  }
+};
+
+export const fetchEduCoordinators = async (token) => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8085/api/coordinatorDonation/all",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token for authentication
+        },
+      }
+    );
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch coordinators.");
+    }
+
+    return response.data.coordinators; // Return the coordinators array
+  } catch (error) {
+    console.error(
+      "Error fetching coordinators:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch coordinators"
+    );
+  }
+};
+
+export const fetchDonationHistory = async (token) => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8085/api/donation/donationHistory",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data; // Success response from backend
+  } catch (error) {
+    console.error(
+      "Error fetching donation history:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch donation history"
+    );
+  }
+};
+
+export const fetchCoordinatorDonationHistory = async (token) => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8085/api/donation/coordinatorHistory",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // Return donations data
+  } catch (error) {
+    console.error(
+      "Error fetching coordinator donation history:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to fetch coordinator donation history"
+    );
+  }
+};
+
+export const fetchCoordinatorDetails = async (token) => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8085/api/coordinatorDonation/Cdetails",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.coordinator; // Return the coordinator details
+  } catch (error) {
+    console.error(
+      "Error fetching coordinator details:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch coordinator details"
+    );
+  }
+};
+
+export const reportPet = async (formData, token) => {
+  console.log("Form data entries:", Array.from(formData.entries()));
+  console.log("Sending pet data:", {
+    hasPhoto: formData.get("photo") !== null, // Check if a photo exists
+    fields: Array.from(formData.entries()).map(([key, value]) =>
+      key === "photo" ? `${key}: ${value.name}` : `${key}: ${value}`
+    ),
+  });
+  try {
+    // Sending formData as the request body and authorization header
+    const response = await axios.post(
+      "http://localhost:8081/api/PetReport",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token in headers
+        },
+      }
+    );
+
+    // Return the server response data
+    return response.data;
+  } catch (error) {
+    console.error("Error while reporting pet:", error); // Log the specific error
+    throw new Error(error.message || "Failed to report pet. Please try again.");
+  }
+};
+
+// Example API function to fetch user posts
+export const getUserPosts = async (token) => {
+  try {
+    const response = await fetch("/api/PetReports", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Include if you're using cookies
+    });
+
+    if (!response.ok) {
+      // Parse error details from the server if available
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to fetch posts");
+    }
+
+    // Parse the JSON response
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching posts:", error.message);
+    throw error;
+  }
+};
+
+// Fetch user-specific lost pet reports
+export const getUserReports = async (token) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/reports/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data; // Return the data from the response (user's lost reports)
+  } catch (error) {
+    console.error("Error fetching user reports:", error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch user reports."
+    );
+  }
+};
+
+// Mark a lost pet report as found (also deletes the report)
+export const markLostAsFound = async (reportId, token) => {
+  try {
+    const response = await axios.delete(
+      `${BASE_URL}/reports/${reportId}/found`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data; // Return the server response
+  } catch (error) {
+    console.error("Error marking report as found:", error);
+    throw new Error(
+      error.response?.data?.message || "Failed to mark report as found."
+    );
+  }
+};
+
+// Match lost pets with found pets
+export const getMatches = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/matchPets`);
+    return response.data.matches; // This will contain the matched pets
+  } catch (error) {
+    console.error("Error fetching matches:", error);
+    throw error;
+  }
+};
+
+// Send notifications to pet owners for matches
+export const sendNotificationToOwner = async (matchData, token) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/sendNotification`,
+      matchData, // matchData is already the request body
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", // Set content type explicitly
+        },
+      }
+    );
+
+    // Check for successful response
+    if (response.status !== 200) {
+      throw new Error(
+        `Failed to send notification. Status: ${response.status}`
+      );
+    }
+
+    return response.data; // Assuming the response data contains useful information
+  } catch (error) {
+    console.error("Notification error:", error.message); // Log error for debugging
+    throw error;
+  }
+};

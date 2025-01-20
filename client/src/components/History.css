@@ -1,0 +1,145 @@
+/* General page styling */
+.history-page {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Container for the history section */
+  .history-container {
+    width: 90%;
+    max-width: 800px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  /* Page title */
+  .history-container h1 {
+    color: #333333;
+    margin-bottom: 20px;
+  }
+  
+  /* Error and notification messages */
+  .error-message {
+    color: #d9534f;
+    background: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .notification-message {
+    color: #3c763d;
+    background: #dff0d8;
+    border: 1px solid #d6e9c6;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  /* Style for the entire report list */
+.report-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Adjust columns dynamically */
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+/* Style for each card */
+.card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Style for individual report items inside cards */
+.report-item {
+  display: flex;
+  padding: 16px;
+}
+
+/* Photo section */
+.report-photo {
+  flex: 0 0 150px;
+  margin-right: 20px;
+}
+
+.pet-photo {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.photo-placeholder {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0e0e0;
+  color: #888;
+  border-radius: 8px;
+}
+
+/* Details section */
+.report-details {
+  flex: 1;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Button styling */
+.mark-as-found-button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #5A3D3A;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.mark-as-found-button:hover {
+  background-color: #0056b3;
+}
+
+  
+  /* Mark as Found button */
+  .found-button {
+    background: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .found-button:hover {
+    background: #4cae4c;
+  }
+  
+  .found-button:active {
+    background: #449d44;
+  }
+  
+  /* No reports message */
+  .history-container p {
+    color: #777777;
+    font-size: 16px;
+  }
+  

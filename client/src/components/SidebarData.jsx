@@ -37,7 +37,7 @@ export const SidebarData = (role) => {
             className="lostAndFoundIcon"
           />
         ),
-        link: "/user/home",
+        link: "/user/reportpet",
       },
       {
         title: "Explore Community",
@@ -52,7 +52,7 @@ export const SidebarData = (role) => {
       {
         title: "Donation",
         icon: <img src={DonationIcon} alt="Donation Icon" className="icon" />,
-        link: "/user/home",
+        link: "/user/donation",
       }
     );
   } else if (role === "coordinator") {
@@ -71,7 +71,7 @@ export const SidebarData = (role) => {
             className="lostAndFoundIcon"
           />
         ),
-        link: "/coordinator/home",
+        link: "/coordinator/reportpet",
       },
       {
         title: "Manage Your Community",
@@ -86,7 +86,7 @@ export const SidebarData = (role) => {
       {
         title: "Donation",
         icon: <img src={DonationIcon} alt="Donation Icon" className="icon" />,
-        link: "/coordinator/home",
+        link: "/coordinator/donation",
       }
     );
   } else if (role === "admin") {

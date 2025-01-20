@@ -1,0 +1,108 @@
+.UserDonation {
+  display: flex;
+  flex-direction: column;
+}
+
+.UserDonationSideBar {
+  display: flex;
+}
+
+.UserDonationContainer {
+  display: flex;
+}
+
+.UserDonationContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+.UDonationHistory {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.UDonationForm {
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.UDonationForm h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.UDonationForm form div {
+  margin-bottom: 15px;
+}
+.UDonationForm label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.UDonationForm input,
+.UDonationForm select {
+  width: 100%; /* Make inputs fill the box */
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* .UDonationForm input:focus,
+.UDonationForm select:focus {
+  border-color: #4caf50; 
+  outline: none;
+}
+
+.UDonationForm button {
+  background-color: #6a1b9a; 
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%; 
+  margin-top: 10px;
+}
+
+.UDonationForm button:hover {
+  background-color: #4a148c; 
+}
+
+.UDonationForm p {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+}
+
+.CoordinatorDetails {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #777;
+} */
+*/ .Message {
+  color: red;
+  font-weight: bold;
+}
+
+.CoordinatorDetails {
+  margin-top: 10px;
+  font-style: italic;
+}

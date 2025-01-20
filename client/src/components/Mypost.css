@@ -1,0 +1,135 @@
+.posts-container {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding: 5px;
+}
+
+.posts-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.post-card {
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s;
+  width: 100%; /* Make cards fill the container */
+  max-width: 350px; /* Adjust for multiple posts per row */
+}
+
+.post-card:hover {
+  transform: translateY(-5px);
+}
+
+.post-photo-container {
+  width: 40%;
+  height: 150px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pet-photo {
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+}
+
+.photo-placeholder {
+  width: 50%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  color: #666;
+}
+
+.pet-details {
+  padding: 15px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.pet-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #5A3D3A;
+}
+
+.pet-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.value {
+  font-weight: 500;
+  color: #333;
+}
+
+.view-details-btn {
+  margin-top: 30px;
+  padding: 8px;
+  background: #5A3D3A;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.view-details-btn:hover {
+  background: #4A2D2A;
+}
+
+.modal-photo {
+  max-width: 250px; /* Set the max width of the photo */
+  max-height: 250px; /* Set the max height of the photo */
+  margin: 0 auto; /* Center the photo */
+  justify-content: center;
+  align-items: center;
+}
+
+.pet-photo {
+  width: 50%;
+  height: 50%;
+  object-fit: contain; /* Ensures the image scales down while maintaining its aspect ratio */
+}
+
+.close-btn {
+  cursor: pointer;
+  color: #000;
+  font-size: 2rem; /* Adjusted font size */
+  padding: 10px;
+  margin-top: auto; /* Pushes the button to the bottom */
+  background-color: #f1f1f1;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+  background-color: #ddd; /* Hover effect */
+}

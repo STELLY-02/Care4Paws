@@ -14,6 +14,10 @@ const routeUpload = require('./routes/routeUpload');
 const { generateStreamToken } = require('./middlewares/generateStreamToken');
 const petRoutes = require("./routes/petRoutes");
 const adoptFormRoutes = require('./routes/AdoptFormRoutes');
+const educationPostRoutes = require("./routes/EducationPostRoutes");
+const donationRoutes = require("./routes/DonationRoutes");
+const coordinatorDonation = require("./routes/CoordinatorDonationRoutes");
+const petReportRoutes = require("./routes/ReportPetRoutes");
 
 
 dbConnect();
@@ -52,6 +56,10 @@ app.use("/api/uploadPic", routeUpload); //handling upload image
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/api/pets", petRoutes);
 app.use('/api/adopt', adoptFormRoutes);
+app.use("/api/educationPost", educationPostRoutes); // Use the new route for education posts
+app.use("/api/donation", donationRoutes);
+app.use("/api/coordinatorDonation", coordinatorDonation);
+app.use("/api", petReportRoutes);
 
 app.use((req, res, next) => {
     console.log('Request:', {

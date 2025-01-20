@@ -1,0 +1,158 @@
+/* Existing Styles */
+* {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.report-pet-page {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.Reportbottom {
+  width: 100%;
+  background: #e2e2e2;
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: row;
+}
+
+.report-pet-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  background-color: #f9f9f9;
+  border-radius: 0px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Arial', sans-serif;
+  width: 100%;
+}
+
+.report-pet-container h1 {
+  font-size: 1.5rem;
+  color: #4a4a4a;
+  margin-bottom: 30px;
+}
+
+.report-pet-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-fields {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 50px;
+  border-left: 2px solid #e0e0e0;
+}
+
+.left-column, .right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+textarea {
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.upload-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px dashed #ccc;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.upload-photo label {
+  font-size: 1rem;
+  color: #4a4a4a;
+  margin-bottom: 10px;
+}
+
+.submit-button {
+  align-self: center;
+  background-color: #784211;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.submit-button:hover {
+  background-color: #5A3D3A;
+}
+
+.location-container {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.location-container h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.map-container {
+  margin-top: 10px;
+  height: 300px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* New Image Preview Styles */
+.image-preview-container {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.image-preview {
+  width: 250px; /* Width of the preview image */
+  height: 200px; /* Height of the preview image */
+  object-fit: cover; /* Scale image to cover the container while maintaining aspect ratio */
+  border: 2px solid #ccc; /* Add a border to the image preview */
+  border-radius: 8px; /* Optional: rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+}
+
+.image-preview-placeholder {
+  font-size: 0.6rem;
+  color: #888;
+  text-align: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 700px) {
+  .form-fields {
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .image-preview {
+    width: 10px;
+    height: 10px;
+  }
+}

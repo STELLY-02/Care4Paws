@@ -1,0 +1,244 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* overflow: hidden; */
+}
+
+/* Chatbot */
+
+.Chatbot {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  /* overflow: hidden; */
+  background-color: aqua;
+}
+
+.Chatbot .slidebar {
+  min-height: 100vh;
+
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #f0f4f9;
+}
+
+.Chatbot .slidebar img {
+  width: 20px;
+}
+
+.Chatbot .slidebar .menu {
+  margin-top: 5px;
+  display: block;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.Chatbot .slidebar .new-chat {
+  margin-top: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background-color: #e6eaf1;
+  border-radius: 50px;
+  font-size: 14px;
+  color: grey;
+  cursor: pointer;
+}
+
+.Chatbot .slidebar .recent {
+  display: flex;
+  flex-direction: column;
+}
+
+.Chatbot .slidebar .recent-title {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.Chatbot .slidebar .recent-entry {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding: 10px;
+  padding-right: 40px;
+  border-radius: 50px;
+  color: #282828;
+  cursor: pointer;
+}
+
+.Chatbot .slidebar .recent-entry:hover {
+  background-color: #e2e6eb;
+}
+
+.Chatbot .ChatbotMain {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+
+  position: relative; /* Ensure positioning works properly */
+}
+
+.Chatbot .ChatbotMain .chattop {
+  margin-top: 20px;
+  margin-left: 10px;
+  padding: 20px;
+  font-size: 25px;
+  color: #585858;
+  /* background-color: #e6eaf1; */
+  border-radius: 30px;
+}
+
+.containerchat {
+  max-width: 900px;
+  /* margin: auto; */
+}
+/* 
+    .ChatbotMain {
+      background-color: #282828;
+    } */
+
+.ChatbotMain .chatmiddle {
+  margin: 50px 0px;
+  font-size: 56px;
+  color: #c4c7c5;
+  font-weight: 500;
+  padding: 20px;
+  /* background-color: grey; */
+}
+
+.ChatbotMain .chatmiddle span {
+  background: -webkit-linear-gradient(16deg, #4b90ff, #ff5546);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* .containerBottom {
+      margin: auto;
+      background-color: #282828;
+    } */
+
+.ChatbotMain .chatbottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 0px 20px;
+  margin: 50px 0px;
+  max-width: 900px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* background-color: #4b90ff; */
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  gap: 10px;
+  background-color: #f0f4f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 50px;
+  width: 90%;
+  max-width: 800px; /* Prevents search box from expanding too much */
+  /* margin: 0 auto;  */
+}
+
+.search-box img {
+  /* width: 24px; */
+  cursor: pointer;
+}
+
+.search-box input {
+  /* flex: 1;
+    background: transparent;
+    outline: none;
+    border: none;
+    padding: 8px;
+    font-size: 18px; */
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+}
+
+.search-box div {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.result {
+  padding: 0px 5%;
+  max-height: 70vh;
+  overflow-y: scroll;
+}
+
+.result::-webkit-scrollbar {
+  display: none;
+}
+
+.result-title {
+  margin: 40px 0px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 18px;
+}
+
+.result img {
+  width: 40px;
+  border-radius: 50%;
+}
+
+.result-data {
+  display: flex;
+  align-items: start;
+  gap: 20px;
+  flex-wrap: nowrap; /* Ensures the image and text remain in one line */
+}
+
+.result img {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0; /* Prevents the image from shrinking */
+  border-radius: 50%;
+  object-fit: cover; /* Ensures the image maintains aspect ratio */
+}
+
+.loader {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.loader hr {
+  border-radius: 4px;
+  border: none;
+  background-color: #4b90ff;
+  background: linear-gradient(to right, lightblue, red, orange);
+  background-size: 800px 50px;
+  height: 20px;
+  animation: loader 3s infinite linear;
+}
+
+@keyframes loader {
+  0% {
+    background-position: -800px 0px;
+  }
+  100% {
+    background-position: 800px 0px;
+  }
+}
+
+.result-data p {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+}
