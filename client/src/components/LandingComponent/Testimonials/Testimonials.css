@@ -24,7 +24,7 @@ body {
 /* Center container */
 .slick-slider {
   width: 100%;
-  max-width: 800px;
+  max-width: 500px;
   margin: 0 auto !important; /* Center the slider */
   overflow: hidden !important;
   padding: 0 20px;

@@ -242,7 +242,6 @@ const CoordinatorAdoptionPage = () => {
 
             console.log('Update response:', response.data);
 
-            // Update the pets list with the updated pet
             setPets(prevPets => 
                 prevPets.map(pet => 
                     pet._id === editingPet._id ? response.data : pet
