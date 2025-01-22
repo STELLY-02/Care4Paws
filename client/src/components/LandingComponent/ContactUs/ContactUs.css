@@ -35,6 +35,7 @@ body {
 
 .middle-right p {
   margin: 5px 0;
+  text-align: left;
 }
 
 .right-most .social-icons {
